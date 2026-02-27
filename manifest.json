@@ -1,0 +1,25 @@
+{
+  "name": "livininbintaro",
+  "short_name": "livininbintaro",
+  "description": "Property listings di Bintaro Jaya",
+  "start_url": "/livininbintaro/",
+  "scope": "/livininbintaro/",
+  "display": "standalone",
+  "background_color": "#1B4332",
+  "theme_color": "#1B4332",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect fill='%231B4332' width='512' height='512' rx='80'/%3E%3Ctext x='256' y='280' text-anchor='middle' dy='.35em' font-size='180' fill='%2352B788' font-family='sans-serif' font-weight='bold'%3ELiB%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect fill='%231B4332' width='192' height='192' rx='32'/%3E%3Ctext x='96' y='106' text-anchor='middle' dy='.35em' font-size='68' fill='%2352B788' font-family='sans-serif' font-weight='bold'%3ELiB%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

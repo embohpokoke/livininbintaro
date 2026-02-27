@@ -1,0 +1,2602 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="livininbintaro">
+<meta name="theme-color" content="#1B4332">
+<meta name="description" content="Property listings di Bintaro Jaya — Jual, Sewa, Rumah, Apartemen, Kavling, Ruko">
+<link rel="manifest" href="/livininbintaro/manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231B4332' width='100' height='100' rx='20'/><text x='50' y='55' text-anchor='middle' dy='.35em' font-size='40' fill='%2352B788' font-family='sans-serif' font-weight='bold'>LiB</text></svg>">
+<title>livininbintaro — Property</title>
+<style>
+  :root {
+    --primary: #1B4332;
+    --primary-light: #2D6A4F;
+    --primary-dark: #0B2618;
+    --accent: #52B788;
+    --accent-light: #D8F3DC;
+    --white: #FFFFFF;
+    --gray-50: #F8FAF9;
+    --gray-100: #F1F3F2;
+    --gray-200: #E2E6E4;
+    --gray-300: #C5CBC8;
+    --gray-500: #4A524D;
+    --gray-700: #3D4440;
+    --gray-900: #1A1D1B;
+    --gold: #D4A843;
+    --red: #E63946;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    --radius: 12px;
+    --radius-lg: 16px;
+    --container-max: 1400px;
+    --sidebar-width: 600px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background:var(--gray-50); color:var(--gray-900); margin:0 auto; min-height:100vh; overflow-x:hidden; }
+
+  *:focus-visible { outline: 2px solid #52B788; outline-offset: 2px; }
+  button:focus-visible, .filter-chip:focus-visible, .nav-item:focus-visible, .section-link:focus-visible { outline: 2px solid #52B788; outline-offset: 2px; box-shadow: 0 0 0 4px rgba(82,183,136,0.2); }
+  .search-bar input:focus-visible { outline: none; }
+  .search-bar:focus-within { outline: 2px solid #52B788; outline-offset: 2px; box-shadow: 0 0 0 4px rgba(82,183,136,0.25); }
+  .card-actions button:focus-visible { outline: 2px solid #52B788; outline-offset: 2px; box-shadow: 0 0 0 4px rgba(82,183,136,0.2); border-radius: 50%; }
+  .property-card:focus-visible, .featured-card:focus-visible { outline: 2px solid #52B788; outline-offset: 2px; box-shadow: 0 0 0 4px rgba(82,183,136,0.2); }
+
+  .status-bar { height:env(safe-area-inset-top, 44px); background:var(--primary); }
+  .header { background:var(--primary); padding:0 20px 20px; position:sticky; top:0; z-index:100; }
+  .header-top { display:flex; justify-content:space-between; align-items:center; padding:12px 0; }
+  .logo { color:var(--white); font-size:1.3rem; font-weight:700; letter-spacing:-0.5px; }
+  .logo span { color:var(--accent); }
+  .header-icons { display:flex; gap:16px; }
+  .header-icons button { background:none; border:none; color:var(--white); font-size:1.2rem; cursor:pointer; opacity:0.8; display:flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; }
+  .header-icons button:hover { opacity:1; }
+
+  .search-bar { background:rgba(255,255,255,0.15); border-radius:var(--radius); padding:12px 16px; display:flex; align-items:center; gap:10px; backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.1); }
+  .search-bar svg { color:var(--gray-300); flex-shrink:0; }
+  .search-bar input { background:none; border:none; outline:none; color:var(--white); font-size:0.95rem; width:100%; }
+  .search-bar input::placeholder { color:rgba(255,255,255,0.5); }
+
+  .filters { display:flex; gap:8px; overflow-x:auto; padding:16px 20px 8px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  .filters::-webkit-scrollbar { display:none; }
+  .filter-chip { flex-shrink:0; min-height:44px; padding:10px 18px; border-radius:20px; font-size:0.82rem; font-weight:600; cursor:pointer; border:1.5px solid var(--gray-200); background:var(--white); color:var(--gray-700); transition:all 0.2s; display:flex; align-items:center; }
+  .filter-chip.active { background:var(--primary); color:var(--white); border-color:var(--primary); }
+  .filter-chip:hover { background: #D8F3DC; border-color: #52B788; }
+
+  .content { padding:8px 20px 100px; }
+
+  .stats-banner { display:grid; grid-template-columns:1fr 1fr 1fr; gap:2px; background:linear-gradient(135deg, #52B788 0%, #2D6A4F 50%, #52B788 100%); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:20px; box-shadow:0 12px 32px rgba(27,67,50,0.35); padding:2px; }
+  .stat-item { background:linear-gradient(135deg, rgba(27,67,50,0.95) 0%, rgba(45,106,79,0.9) 100%); padding:24px 14px; text-align:center; border-left:none; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:110px; }
+  .stat-value { font-size:2.6rem; font-weight:900; color:#52B788; line-height:1; margin-bottom:6px; }
+  .stat-label { font-size:0.82rem; color:rgba(255,255,255,0.9); text-transform:uppercase; letter-spacing:0.7px; font-weight:600; }
+
+  .section-header { display:flex; justify-content:space-between; align-items:center; margin:20px 0 12px; }
+  .section-title { font-size:1.2rem; font-weight:800; color:var(--gray-900); }
+  .section-link { font-size:0.9rem; color:var(--white); font-weight:700; cursor:pointer; background:#1B4332; border:2px solid #52B788; padding:10px 20px; border-radius:6px; transition:all 0.2s; text-decoration:none; display:inline-block; box-shadow:var(--shadow-sm); }
+  .section-link:hover { background:#245A42; border-color:#40A86D; box-shadow:var(--shadow-md); }
+  .section-link:active { background:#0B2618; transform:scale(0.96); }
+  .section-link:focus-visible { outline:2px solid #52B788; outline-offset:2px; }
+
+  .property-card { background:var(--white); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:16px; box-shadow:var(--shadow-md); transition:transform 0.2s, box-shadow 0.2s; cursor:pointer; }
+  .property-card:active { transform:scale(0.98); }
+  .property-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+  .card-image { width:100%; height:200px; object-fit:cover; background:var(--gray-200); position:relative; }
+  .card-image-placeholder { width:100%; height:200px; background:linear-gradient(135deg, var(--gray-200), var(--gray-300)); display:flex; align-items:center; justify-content:center; color:var(--gray-500); font-size:2.5rem; position:relative; aspect-ratio:16/9; overflow:visible; }
+  .no-photo-placeholder { flex-direction:column; gap:6px; background:var(--gray-100); }
+  .no-photo-text { font-size:0.75rem; color:var(--gray-500); font-weight:500; }
+  .card-badge { position:absolute; top:12px; left:12px; padding:4px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; z-index:2; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .badge-jual { background:var(--red); color:white; }
+  .badge-sewa { background:#2196F3; color:white; }
+  .badge-hot { background:var(--gold); color:white; }
+  .card-price-overlay { position:absolute; bottom:0; left:0; right:0; padding:12px 16px; background:linear-gradient(transparent, rgba(0,0,0,0.7)); }
+  .card-price { color:white; font-size:1.2rem; font-weight:800; }
+  .card-price small { font-size:0.75rem; font-weight:400; opacity:0.8; }
+  .card-body { padding:14px 16px; }
+  .card-title { font-size:0.95rem; font-weight:700; color:var(--gray-900); margin-bottom:6px; overflow:hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-clamp: 2; }
+  .card-location { font-size:0.8rem; color:var(--gray-700); margin-bottom:10px; display:flex; align-items:center; gap:4px; }
+  .card-specs { display:flex; gap:16px; flex-wrap:wrap; }
+  .spec { display:flex; align-items:center; gap:4px; font-size:0.78rem; color:var(--gray-700); }
+  .spec svg { color:var(--gray-700); }
+  .card-footer { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-top:1px solid var(--gray-100); }
+  .card-cpa { font-size:0.72rem; color:var(--gray-700); }
+  .card-actions { display:flex; gap:12px; }
+  .card-actions button { background:none; border:none; color:var(--gray-500); font-size:1.1rem; cursor:pointer; padding:4px; min-width:44px; min-height:44px; display:flex; align-items:center; justify-content:center; transition: all 0.2s; }
+  .card-actions button:hover { color: #1B4332; background: #D8F3DC; border-radius: 50%; }
+
+  .featured-scroll { display:flex; gap:12px; overflow-x:auto; padding-bottom:8px; -webkit-overflow-scrolling:touch; scrollbar-width:none; scroll-snap-type:x mandatory; scroll-behavior:smooth; }
+  .featured-scroll::-webkit-scrollbar { display:none; }
+  .featured-scroll > * { scroll-snap-align:start; }
+  .featured-card { flex-shrink:0; width:260px; background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-md); cursor:pointer; transition:transform 0.2s, box-shadow 0.2s; }
+  .featured-card:hover { box-shadow:var(--shadow-lg); }
+  .featured-card:active { transform:scale(0.98); }
+  .featured-card .card-image-placeholder { height:140px; font-size:1.8rem; overflow:visible; }
+  .featured-card .card-body { padding:10px 12px; }
+  .featured-card .card-title { font-size:0.85rem; overflow:hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-clamp: 2; }
+  .featured-card .card-price-tag { font-size:0.9rem; font-weight:800; color:var(--primary); }
+  .featured-card .card-specs { margin-top:6px; }
+
+  .bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:100%; background:var(--white); border-top:1px solid var(--gray-200); display:flex; justify-content:space-around; padding:8px 0; padding-bottom:max(8px, env(safe-area-inset-bottom)); z-index:100; box-shadow:0 -2px 10px rgba(0,0,0,0.05); }
+  .nav-item { display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; padding:4px 12px; min-height:48px; min-width:48px; justify-content:center; transition: all 0.2s; }
+  .nav-item svg { width:22px; height:22px; color:var(--gray-500); transition: color 0.2s; }
+  .nav-item span { font-size:0.65rem; color:var(--gray-500); font-weight:500; transition: color 0.2s; }
+  .nav-item.active svg { color:var(--primary); }
+  .nav-item.active span { color:var(--primary); font-weight:700; }
+  .nav-item:hover svg { color: #2D6A4F; }
+  .nav-item:hover span { color: #2D6A4F; }
+  .nav-badge { background:var(--red); color:white; font-size:0.55rem; font-weight:700; width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; position:absolute; top:-2px; right:-6px; }
+
+  .page { display:none; opacity:0; transition:opacity 0.25s ease; }
+  .page.active { display:block; opacity:1; }
+
+  /* Dashboard */
+  .dash-card { background:var(--white); border-radius:var(--radius); padding:18px; margin-bottom:14px; box-shadow:var(--shadow-sm); }
+  .dash-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
+  .dash-metric { background:var(--white); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow-sm); transition: box-shadow 0.2s; }
+  .dash-metric:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .dash-metric-label { font-size:0.72rem; color:var(--gray-700); text-transform:uppercase; letter-spacing:0.5px; }
+  .dash-metric-value { font-size:1.6rem; font-weight:800; color:var(--primary); margin:4px 0; }
+  .dash-metric-sub { font-size:0.75rem; color:var(--gray-700); }
+  .dash-metric-change { font-size:0.72rem; font-weight:600; }
+  .change-up { color:#38a169; }
+  .change-down { color:var(--red); }
+
+  .pipeline { display:flex; gap:2px; margin:12px 0; }
+  .pipeline-stage { flex:1; text-align:center; padding:10px 4px; border-radius:8px; }
+  .pipeline-stage .count { font-size:1.2rem; font-weight:800; color:var(--white); }
+  .pipeline-stage .label { font-size:0.6rem; color:rgba(255,255,255,0.9); text-transform:uppercase; letter-spacing:0.3px; margin-top:2px; }
+  .stage-new { background:#3182ce; }
+  .stage-contact { background:#805ad5; }
+  .stage-appt { background:#d69e2e; }
+  .stage-showing { background:#dd6b20; }
+  .stage-closed { background:#38a169; }
+
+  .activity-item { display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--gray-100); }
+  .activity-item:last-child { border:none; }
+  .activity-dot { width:8px; height:8px; border-radius:50%; margin-top:6px; flex-shrink:0; }
+  .dot-green { background:var(--accent); }
+  .dot-blue { background:#3182ce; }
+  .dot-orange { background:#dd6b20; }
+  .activity-text { font-size:0.85rem; color:var(--gray-700); }
+  .activity-text strong { color:var(--gray-900); }
+  .activity-time { font-size:0.72rem; color:var(--gray-700); margin-top:2px; }
+
+  .empty-state { text-align:center; padding:40px 20px; color:var(--gray-500); }
+  .empty-state .icon { font-size:3rem; margin-bottom:12px; }
+  .icon-inline { display:inline-flex; align-items:center; vertical-align:middle; }
+
+  /* Loading skeleton */
+  @keyframes shimmer { 0%{background-position:-200px 0} 100%{background-position:200px 0} }
+  .skeleton { background:linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%); background-size:400px 100%; animation:shimmer 1.5s infinite; border-radius:8px; }
+  .skeleton-card { height:280px; margin-bottom:16px; border-radius:var(--radius-lg); }
+  .skeleton-featured { flex-shrink:0; width:260px; height:220px; border-radius:var(--radius); }
+  .skeleton-stat { height:80px; }
+  .load-more-btn { display:block; width:100%; padding:14px; margin:8px 0 20px; border:1.5px solid var(--primary); border-radius:var(--radius); background:var(--white); color:var(--primary); font-size:0.9rem; font-weight:700; cursor:pointer; transition:all 0.2s; text-align:center; }
+  .load-more-btn:hover { background:var(--accent-light); }
+  .load-more-btn:active { transform:scale(0.98); }
+  .load-more-btn:disabled { opacity:0.6; cursor:not-allowed; }
+  .load-more-spinner { display:inline-block; width:18px; height:18px; border:2px solid var(--gray-200); border-top-color:var(--primary); border-radius:50%; animation:spin 0.7s linear infinite; vertical-align:middle; margin-right:8px; }
+  .skeleton-text { height:16px; margin-bottom:8px; width:60%; }
+
+  /* Page spinner */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .page-spinner { display:flex; align-items:center; justify-content:center; padding:24px; }
+  .page-spinner::after { content:''; width:28px; height:28px; border:3px solid var(--gray-200); border-top-color:var(--accent); border-radius:50%; animation:spin 0.7s linear infinite; }
+
+  /* Login form */
+  .login-form { background:var(--white); border-radius:var(--radius-lg); padding:28px 24px; box-shadow:var(--shadow-md); margin:20px 0; }
+  .login-form h2 { font-size:1.2rem; font-weight:700; color:var(--primary); margin-bottom:4px; }
+  .login-form p { font-size:0.85rem; color:var(--gray-500); margin-bottom:20px; }
+  .form-group { margin-bottom:16px; }
+  .form-group label { display:block; font-size:0.8rem; font-weight:600; color:var(--gray-700); margin-bottom:6px; }
+  .form-group input, .form-group select, .form-group textarea { width:100%; padding:12px 16px; min-height:44px; border:1.5px solid var(--gray-200); border-radius:var(--radius); font-size:0.9rem; background:var(--white); color:var(--gray-900); transition:border-color 0.2s; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--accent); outline:none; }
+  .form-group input.input-error, .form-group select.input-error, .form-group textarea.input-error { border-color:var(--red); }
+  .form-group textarea { resize:vertical; min-height:80px; }
+  .btn-primary { width:100%; padding:14px; border:none; border-radius:var(--radius); background:var(--primary); color:var(--white); font-size:0.95rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
+  .btn-primary:hover { background:var(--primary-light); }
+  .btn-primary:active { transform:scale(0.98); }
+  .btn-primary:disabled { opacity:0.6; cursor:not-allowed; }
+  .btn-secondary { width:100%; padding:14px; border:1.5px solid var(--primary); border-radius:var(--radius); background:var(--white); color:var(--primary); font-size:0.95rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
+  .btn-secondary:hover { background:var(--accent-light); }
+  .btn-small { padding:8px 16px; font-size:0.82rem; width:auto; }
+  .btn-danger { background:var(--red); }
+  .btn-danger:hover { background:#c5303c; }
+
+  /* Error/success messages */
+  .alert { padding:12px 16px; border-radius:var(--radius); font-size:0.85rem; margin-bottom:16px; }
+  .alert-error { background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; }
+  .alert-success { background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
+
+  /* Detail overlay */
+  .detail-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:var(--white); z-index:9999; overflow-y:auto; max-width:100%; margin:0 auto; transform:translateX(100%); transition:transform 0.3s ease; visibility:hidden; }
+  .detail-overlay.active { transform:translateX(0); visibility:visible; }
+  body.detail-open { overflow:hidden; }
+  .detail-header { position:sticky; top:0; z-index:10; display:flex; align-items:center; gap:12px; padding:12px 16px; background:var(--primary); color:white; }
+  .detail-header button { background:none; border:none; color:white; cursor:pointer; padding:8px; display:flex; align-items:center; min-width:44px; min-height:44px; justify-content:center; }
+  .detail-header h3 { font-size:1rem; font-weight:600; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .detail-images { width:100%; height:240px; background:linear-gradient(135deg, var(--gray-200), var(--gray-300)); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+  .detail-images img { width:100%; height:100%; object-fit:cover; }
+  .detail-image-nav { position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px; }
+  .detail-image-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.5); }
+  .detail-image-dot.active { background:white; }
+  .detail-content { padding:20px; padding-bottom:90px; }
+  .detail-price { font-size:1.5rem; font-weight:800; color:var(--primary); margin-bottom:4px; }
+  .detail-title { font-size:1.1rem; font-weight:700; margin-bottom:8px; }
+  .detail-location { font-size:0.85rem; color:var(--gray-500); margin-bottom:16px; display:flex; align-items:center; gap:4px; }
+  .detail-specs-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+  .detail-spec { background:var(--gray-100); padding:12px; border-radius:var(--radius); text-align:center; }
+  .detail-spec-value { font-size:1rem; font-weight:700; color:var(--primary); }
+  .detail-spec-label { font-size:0.72rem; color:var(--gray-500); margin-top:2px; }
+  .detail-section { margin-bottom:20px; }
+  .detail-section h4 { font-size:0.95rem; font-weight:700; margin-bottom:8px; color:var(--gray-900); }
+  .detail-section p { font-size:0.88rem; color:var(--gray-700); line-height:1.5; }
+  .detail-tags { display:flex; flex-wrap:wrap; gap:8px; }
+  .detail-tag { padding:6px 12px; border-radius:20px; font-size:0.78rem; background:var(--accent-light); color:var(--primary); font-weight:600; }
+  .detail-actions { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:100%; padding:16px 20px; background:rgba(255,255,255,0.92); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-top:1px solid var(--gray-200); display:flex; gap:12px; z-index:10000; box-shadow:0 -4px 20px rgba(0,0,0,0.08); }
+  .btn-wa { flex:1; padding:14px; border:none; border-radius:var(--radius); background:#25D366; color:white; font-size:0.95rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .btn-wa:hover { background:#20bd5a; }
+  .btn-share { padding:14px 18px; border:1.5px solid var(--gray-200); border-radius:var(--radius); background:var(--white); cursor:pointer; display:flex; align-items:center; }
+
+  /* Leads */
+  .lead-card { background:var(--white); border-radius:var(--radius); padding:16px; margin-bottom:12px; box-shadow:var(--shadow-sm); }
+  .lead-card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
+  .lead-name { font-size:0.95rem; font-weight:700; }
+  .lead-status { padding:4px 10px; border-radius:12px; font-size:0.7rem; font-weight:700; text-transform:uppercase; }
+  .status-new { background:#dbeafe; color:#1d4ed8; }
+  .status-contacted { background:#ede9fe; color:#7c3aed; }
+  .status-appointment { background:#fef3c7; color:#b45309; }
+  .status-showing { background:#ffedd5; color:#c2410c; }
+  .status-closed { background:#d1fae5; color:#065f46; }
+  .status-lost { background:#fee2e2; color:#b91c1c; }
+  .lead-info { font-size:0.82rem; color:var(--gray-500); margin-bottom:4px; }
+  .lead-actions { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+
+  /* Bucket Tabs */
+  .bucket-tabs { display:flex; gap:8px; padding:12px 20px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; background:var(--gray-50); border-bottom:1px solid var(--gray-200); }
+  .bucket-tabs::-webkit-scrollbar { display:none; }
+  .bucket-tab { display:flex; align-items:center; gap:6px; padding:8px 16px; border-radius:20px; font-size:0.85rem; font-weight:500; white-space:nowrap; cursor:pointer; background:var(--white); border:1px solid var(--gray-200); transition:all 0.2s; }
+  .bucket-tab.active { background:var(--primary); color:var(--white); border-color:var(--primary); }
+  .bucket-tab .count { background:rgba(0,0,0,0.08); padding:2px 8px; border-radius:10px; font-size:0.75rem; }
+  .bucket-tab.active .count { background:rgba(255,255,255,0.3); }
+
+  /* AI Score Badge */
+  .ai-score-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:12px; font-size:0.7rem; font-weight:700; margin-left:6px; }
+  .ai-score-badge.hot { background:#fee2e2; color:#dc2626; }
+  .ai-score-badge.warm { background:#d1fae5; color:#059669; }
+  .ai-score-badge.cool { background:#fef3c7; color:#d97706; }
+  .ai-score-badge.cold { background:#f3f4f6; color:#6b7280; }
+
+  /* Source Badge */
+  .source-badge { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:600; text-transform:uppercase; background:#e5e7eb; color:#374151; margin-left:6px; }
+
+  /* AI Insight */
+  .ai-insight { background:#ecfdf5; border-left:3px solid #10b981; padding:8px 12px; margin-top:8px; border-radius:0 8px 8px 0; font-size:0.8rem; color:#065f46; }
+
+  /* Lead Detail Overlay */
+  .lead-detail-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:var(--gray-50); z-index:250; display:none; flex-direction:column; overflow-y:auto; }
+  .lead-detail-overlay.active { display:flex; }
+  .lead-detail-header { background:var(--primary); color:var(--white); padding:12px 16px; display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:10; }
+  .lead-detail-header button { background:none; border:none; color:var(--white); cursor:pointer; padding:8px; display:flex; align-items:center; }
+  .lead-detail-header h3 { font-size:1rem; font-weight:700; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .lead-detail-body { padding:16px; padding-bottom:100px; }
+  .ld-card { background:var(--white); border-radius:var(--radius); padding:16px; margin-bottom:12px; box-shadow:var(--shadow-sm); }
+  .ld-card h4 { font-size:0.9rem; font-weight:700; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+  .ld-info-row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--gray-100); font-size:0.82rem; }
+  .ld-info-row:last-child { border-bottom:none; }
+  .ld-info-label { color:var(--gray-500); }
+  .ld-info-value { font-weight:600; text-align:right; max-width:60%; }
+  .ld-actions-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+  .ld-actions-row button { flex:1; min-width:0; padding:10px 8px; border:none; border-radius:var(--radius); font-weight:600; font-size:0.78rem; cursor:pointer; }
+  .ld-btn-ai { background:#8b5cf6; color:white; }
+  .ld-btn-recommend { background:#f59e0b; color:white; }
+  .ld-btn-chat { background:#25D366; color:white; }
+  .ld-btn-score { background:#3b82f6; color:white; }
+
+  /* Notes section */
+  .note-item { padding:10px 12px; border-bottom:1px solid var(--gray-100); }
+  .note-item:last-child { border-bottom:none; }
+  .note-content { font-size:0.82rem; color:var(--gray-900); line-height:1.4; }
+  .note-meta { font-size:0.68rem; color:var(--gray-500); margin-top:4px; display:flex; justify-content:space-between; align-items:center; }
+  .note-delete { background:none; border:none; color:var(--red); cursor:pointer; font-size:0.68rem; padding:2px 6px; }
+  .note-input-row { display:flex; gap:8px; margin-top:8px; }
+  .note-input-row input { flex:1; padding:10px 12px; border:1.5px solid var(--gray-200); border-radius:var(--radius); font-size:0.82rem; }
+  .note-input-row button { padding:10px 16px; background:var(--primary); color:var(--white); border:none; border-radius:var(--radius); font-weight:600; font-size:0.82rem; cursor:pointer; white-space:nowrap; }
+
+  /* AI Summary card */
+  .ai-summary-card { background:linear-gradient(135deg, #f0fdf4, #ecfdf5); border:1px solid #bbf7d0; }
+  .ai-summary-text { font-size:0.82rem; color:#065f46; line-height:1.5; }
+  .ai-risk-badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:0.7rem; font-weight:700; }
+  .risk-low { background:#d1fae5; color:#065f46; }
+  .risk-medium { background:#fef3c7; color:#92400e; }
+  .risk-high { background:#fee2e2; color:#991b1b; }
+
+  /* Property recommendation cards */
+  .rec-card { padding:10px 12px; border:1px solid var(--gray-200); border-radius:var(--radius); margin:6px 0; display:flex; gap:10px; align-items:center; }
+  .rec-card-info { flex:1; min-width:0; }
+  .rec-card-title { font-size:0.82rem; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .rec-card-detail { font-size:0.72rem; color:var(--gray-500); margin-top:2px; }
+  .rec-hot { color:var(--gold); font-size:0.72rem; font-weight:700; }
+
+  /* Timeline */
+  .timeline-item { display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--gray-100); }
+  .timeline-item:last-child { border-bottom:none; }
+  .timeline-dot { width:8px; height:8px; border-radius:50%; margin-top:5px; flex-shrink:0; }
+  .timeline-dot.msg-in { background:#3b82f6; }
+  .timeline-dot.msg-out { background:#10b981; }
+  .timeline-dot.note { background:#8b5cf6; }
+  .timeline-dot.activity { background:#f59e0b; }
+  .timeline-body { flex:1; min-width:0; }
+  .timeline-text { font-size:0.8rem; color:var(--gray-900); line-height:1.3; }
+  .timeline-time { font-size:0.65rem; color:var(--gray-500); margin-top:2px; }
+  .timeline-type { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
+
+  @media (min-width:768px) {
+    .lead-detail-overlay { max-width:var(--sidebar-width); left:auto; right:0; box-shadow:-4px 0 24px rgba(0,0,0,0.15); }
+  }
+
+  /* Quick Move Menu */
+  .quick-move-menu { position:absolute; right:8px; top:40px; background:var(--white); border:1px solid var(--gray-200); border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:100; display:none; min-width:150px; }
+  .quick-move-menu.show { display:block; }
+  .quick-move-menu button { display:block; width:100%; padding:10px 16px; text-align:left; border:none; background:none; cursor:pointer; font-size:0.85rem; }
+  .quick-move-menu button:hover { background:var(--gray-100); }
+
+  /* Chat Modal */
+  .chat-modal { position:fixed; top:0; left:0; right:0; bottom:0; background:var(--white); z-index:260; display:none; flex-direction:column; }
+  .chat-modal.active { display:flex; }
+  .chat-header { background:var(--primary); color:var(--white); padding:12px 16px; display:flex; align-items:center; gap:12px; }
+  .chat-header .chat-back { background:none; border:none; color:var(--white); cursor:pointer; padding:8px; min-width:44px; min-height:44px; display:flex; align-items:center; justify-content:center; }
+  .chat-header .chat-name { flex:1; font-weight:700; font-size:1rem; }
+  .chat-header .chat-phone { font-size:0.78rem; opacity:0.8; }
+  .chat-messages { flex:1; overflow-y:auto; padding:16px; background:#f0f2f5; display:flex; flex-direction:column; gap:4px; }
+  .chat-bubble { max-width:80%; padding:8px 12px; border-radius:12px; font-size:0.85rem; line-height:1.4; word-break:break-word; }
+  .chat-bubble.inbound { background:var(--white); align-self:flex-start; border-bottom-left-radius:4px; }
+  .chat-bubble.outbound { background:#dcfce7; align-self:flex-end; border-bottom-right-radius:4px; }
+  .chat-bubble .chat-time { font-size:0.65rem; color:#9ca3af; margin-top:4px; text-align:right; }
+  .chat-input-bar { display:flex; gap:8px; padding:12px 16px; background:var(--white); border-top:1px solid var(--gray-200); }
+  .chat-input-bar input { flex:1; border:1px solid var(--gray-200); border-radius:20px; padding:10px 16px; font-size:0.88rem; outline:none; }
+  .chat-input-bar input:focus { border-color:var(--accent); }
+  .chat-input-bar button { background:var(--primary); color:var(--white); border:none; border-radius:50%; width:44px; height:44px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .chat-input-bar button:hover { background:var(--primary-light); }
+  .chat-empty { text-align:center; color:var(--gray-500); padding:40px; font-size:0.9rem; }
+  .chat-date-sep { text-align:center; font-size:0.7rem; color:var(--gray-500); margin:8px 0; }
+  @media (min-width:768px) {
+    .chat-modal { max-width:var(--sidebar-width); left:auto; right:0; box-shadow:-4px 0 24px rgba(0,0,0,0.15); }
+  }
+
+  /* Unread badge on nav */
+  .wa-unread-badge { background:var(--red); color:white; font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:10px; margin-left:4px; }
+
+  /* Profile */
+  .profile-header { text-align:center; padding:30px 20px; }
+  .profile-avatar { width:80px; height:80px; border-radius:50%; background:var(--accent-light); display:flex; align-items:center; justify-content:center; margin:0 auto 12px; }
+  .profile-avatar svg { width:40px; height:40px; color:var(--primary); }
+  .profile-name { font-size:1.2rem; font-weight:700; }
+  .profile-email { font-size:0.85rem; color:var(--gray-500); }
+  .profile-menu { padding:0 20px; }
+  .profile-menu-item { display:flex; align-items:center; gap:12px; padding:16px; background:var(--white); border-radius:var(--radius); margin-bottom:8px; box-shadow:var(--shadow-sm); cursor:pointer; }
+  .profile-menu-item svg { width:20px; height:20px; color:var(--gray-500); }
+  .profile-menu-item span { flex:1; font-size:0.9rem; font-weight:500; }
+  .profile-menu-item .chevron { color:var(--gray-300); }
+
+  /* Search page */
+  .search-filters { padding:16px 20px; }
+  .search-results { padding:0 20px 100px; }
+  .filter-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+
+  /* Toast */
+  .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:var(--gray-900); color:white; padding:12px 24px; border-radius:var(--radius); font-size:0.85rem; z-index:300; opacity:0; transition:opacity 0.3s; pointer-events:none; }
+  .toast.show { opacity:1; }
+
+  /* Modal */
+  .modal-backdrop { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:250; display:none; align-items:flex-end; justify-content:center; }
+  .modal-backdrop.active { display:flex; }
+  .modal-content { background:var(--white); border-radius:var(--radius-lg) var(--radius-lg) 0 0; padding:24px; width:100%; max-width:100%; max-height:80vh; overflow-y:auto; }
+  .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+  .modal-header h3 { font-size:1.1rem; font-weight:700; }
+  .modal-close { background:none; border:none; font-size:1.5rem; color:var(--gray-500); cursor:pointer; padding:4px; min-width:44px; min-height:44px; display:flex; align-items:center; justify-content:center; }
+
+  /* Hot Listing Styles */
+  .hot-toggle-btn { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.6); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; z-index: 10; opacity: 0.3; transition: all 0.2s; min-width: 44px; min-height: 44px; }
+  .hot-toggle-btn.active { opacity: 1; transform: scale(1.05); box-shadow: 0 4px 12px rgba(212, 168, 67, 0.4); }
+  .hot-toggle-btn:hover { opacity: 0.8; }
+  .hot-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 300; display: none; align-items: flex-end; justify-content: center; }
+  .hot-modal.active { display: flex; }
+  .hot-modal .modal-content { background: var(--white); border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding: 24px; width: 100%; max-width: 100%; max-height: 80vh; overflow-y: auto; }
+  .hot-modal h3 { font-size: 1.1rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .hot-modal h3 button { background: none; border: none; font-size: 1.5rem; color: var(--gray-500); cursor: pointer; min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+  .hot-reason-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .hot-reason-btn { background: var(--white); border: 2px solid var(--gray-200); border-radius: var(--radius); padding: 16px 12px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: center; min-height: 60px; display: flex; align-items: center; justify-content: center; min-width: 44px; }
+  .hot-reason-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+  .hot-reason-btn.selected { background: var(--accent); color: white; border-color: var(--accent); }
+  .hot-modal textarea { width: 100%; border: 2px solid var(--gray-200); border-radius: var(--radius); padding: 12px; font-size: 0.9rem; margin-bottom: 16px; resize: vertical; min-height: 50px; }
+  .hot-modal textarea:focus { outline: none; border-color: var(--accent); }
+  .hot-modal button:not(.hot-reason-btn) { background: var(--primary); color: white; border: none; border-radius: var(--radius); padding: 12px 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin-right: 8px; transition: background 0.2s; min-height: 44px; min-width: 44px; }
+  .hot-modal button:not(.hot-reason-btn):hover { background: var(--primary-light); }
+  .hot-modal button:last-child { background: var(--gray-300); color: var(--gray-700); margin-right: 0; }
+  .hot-modal button:last-child:hover { background: var(--gray-400); }
+  .hot-badge { position: absolute; top: 45px; left: 12px; background: var(--gold); color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; z-index: 5; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Image carousel in detail */
+  .image-carousel { position:relative; width:100%; height:240px; overflow:hidden; }
+  .image-carousel img { width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; opacity:0; transition:opacity 0.3s; }
+  .image-carousel img.active { opacity:1; }
+  .carousel-btn { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.4); color:white; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:1.2rem; display:flex; align-items:center; justify-content:center; z-index:5; }
+  .carousel-btn.prev { left:8px; }
+  .carousel-btn.next { right:8px; }
+
+  /* Card image */
+  .card-img-container { position:relative; width:100%; height:200px; overflow:hidden; background:var(--gray-200); }
+  .card-img-container img { width:100%; height:100%; object-fit:cover; }
+  .featured-card .card-img-container { height:140px; }
+
+  /* Tabs for search */
+  .tab-bar { display:flex; gap:0; border-bottom:2px solid var(--gray-200); margin-bottom:16px; }
+  .tab-item { flex:1; text-align:center; padding:12px; font-size:0.85rem; font-weight:600; color:var(--gray-500); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.2s; }
+  .tab-item.active { color:var(--primary); border-bottom-color:var(--primary); }
+
+  /* Dashboard mini charts */
+  .pipeline-bars { margin-top:12px; }
+  .pipeline-bar-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .pipeline-bar-label { font-size:0.72rem; color:var(--gray-700); width:60px; flex-shrink:0; text-align:right; }
+  .pipeline-bar-track { flex:1; height:20px; background:var(--gray-100); border-radius:10px; overflow:hidden; }
+  .pipeline-bar-fill { height:100%; border-radius:10px; display:flex; align-items:center; justify-content:flex-end; padding-right:6px; min-width:0; transition:width 0.6s ease; }
+  .pipeline-bar-fill span { font-size:0.6rem; font-weight:700; color:white; }
+  .ratio-bar-container { margin-top:8px; }
+  .ratio-bar-track { display:flex; height:28px; border-radius:8px; overflow:hidden; background:var(--gray-100); }
+  .ratio-bar-segment { display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; color:white; transition:width 0.6s ease; }
+  .ratio-bar-legend { display:flex; gap:16px; margin-top:8px; justify-content:center; }
+  .ratio-legend-item { display:flex; align-items:center; gap:4px; font-size:0.72rem; color:var(--gray-700); }
+  .ratio-legend-dot { width:10px; height:10px; border-radius:3px; }
+
+  /* Pull-to-refresh indicator */
+  .ptr-indicator { text-align:center; padding:0; height:0; overflow:hidden; transition:height 0.2s, padding 0.2s; color:var(--accent); font-size:0.8rem; }
+  .ptr-indicator.visible { height:40px; padding:10px 0; }
+  @keyframes ptr-spin { to { transform:rotate(360deg); } }
+  .ptr-spinner { display:inline-block; width:20px; height:20px; border:2px solid var(--gray-200); border-top-color:var(--accent); border-radius:50%; animation:ptr-spin 0.7s linear infinite; vertical-align:middle; margin-right:6px; }
+
+  /* Small screen fixes */
+  @media (max-width:320px) {
+    .card-title { font-size:0.85rem; overflow:hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-clamp: 2; }
+    .card-price { font-size:1rem; }
+    .card-specs { gap:8px; }
+    .spec { font-size:0.7rem; }
+    .stat-value { font-size:1.6rem; }
+    .featured-card { width:220px; }
+    .filter-chip { padding:8px 12px; font-size:0.75rem; }
+    .section-title { font-size:1rem; }
+    .section-link { padding:6px 12px; font-size:0.78rem; }
+    .detail-title { font-size:0.95rem; }
+    .detail-price { font-size:1.2rem; }
+  }
+
+  /* Ensure touch targets */
+  .filter-chip, .nav-item, .section-link, .card-actions button, .btn-primary, .btn-secondary, .btn-wa, .btn-share, .carousel-btn { min-height:44px; min-width:44px; }
+
+  /* Content bottom padding for nav */
+  .content { padding-bottom:100px; }
+  .search-results { padding-bottom:100px; }
+
+  /* Nav logo (hidden on mobile, shown on desktop) */
+  .nav-logo { display:none; }
+
+  /* ===== TABLET (768px+) ===== */
+  @media (min-width:768px) {
+    .header, .content, .filters, .search-filters, .search-results {
+      padding-left:32px; padding-right:32px; max-width:var(--container-max); margin-left:auto; margin-right:auto;
+    }
+    .status-bar { display:none; }
+    .bottom-nav {
+      top:0; bottom:auto; left:0; transform:none; width:100%;
+      justify-content:flex-end; height:60px; padding:0 24px;
+      border-top:none; border-bottom:1px solid var(--gray-200);
+      box-shadow:0 2px 10px rgba(0,0,0,0.05); z-index:200;
+    }
+    .nav-item { flex-direction:row; gap:6px; padding:8px 16px; }
+    .nav-logo { display:flex; align-items:center; margin-right:auto; }
+    .page { padding-top:60px; }
+    .header { top:60px; }
+    .content { padding-bottom:40px; }
+    .search-results { padding-bottom:40px; }
+
+    #latest-listings-container { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; }
+    #search-results { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; }
+    #latest-listings-container .property-card,
+    #search-results .property-card { margin-bottom:0; }
+    .load-more-btn, .empty-state { grid-column:1 / -1; }
+    .featured-card { width:280px; }
+
+    .detail-overlay { max-width:var(--sidebar-width); left:auto; right:0; margin:0; box-shadow:-4px 0 24px rgba(0,0,0,0.15); }
+    .detail-actions { max-width:var(--sidebar-width); left:auto; right:0; transform:none; }
+
+    .modal-backdrop { align-items:center; }
+    .modal-content { max-width:520px; border-radius:var(--radius-lg); margin:0 auto; }
+    .hot-modal { align-items:center; }
+    .hot-modal .modal-content { max-width:520px; border-radius:var(--radius-lg); margin:0 auto; }
+
+    .toast { bottom:40px; }
+    .login-form { max-width:400px; margin:20px auto; }
+    .profile-menu { max-width:600px; margin:0 auto; }
+  }
+
+  /* ===== DESKTOP (1024px+) ===== */
+  @media (min-width:1024px) {
+    .header, .content, .filters, .search-filters, .search-results {
+      padding-left:48px; padding-right:48px; max-width:var(--container-max); margin-left:auto; margin-right:auto;
+    }
+    #latest-listings-container { grid-template-columns:repeat(3, 1fr); }
+    #search-results { grid-template-columns:repeat(3, 1fr); }
+    .featured-scroll { flex-wrap:wrap; overflow-x:visible; }
+    .featured-card { width:calc(33.333% - 12px); min-width:240px; }
+    .dash-row { grid-template-columns:repeat(3, 1fr); }
+    #leads-content { display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; }
+    #leads-content .lead-card { margin-bottom:0; }
+    body.detail-open::before {
+      content:''; position:fixed; top:0; left:0; right:0; bottom:0;
+      background:rgba(0,0,0,0.3); z-index:9998;
+    }
+    .card-img-container { height:220px; }
+  }
+
+  /* ===== LARGE (1280px+) ===== */
+  @media (min-width:1280px) {
+    #latest-listings-container { grid-template-columns:repeat(4, 1fr); }
+    #search-results { grid-template-columns:repeat(4, 1fr); }
+    .featured-card { width:calc(25% - 12px); }
+    .dash-row { grid-template-columns:repeat(4, 1fr); }
+    #leads-content { grid-template-columns:repeat(3, 1fr); }
+  }
+
+  /* ===== EXTRA-LARGE (1600px+) ===== */
+  @media (min-width:1600px) {
+    .header, .content, .filters, .search-filters, .search-results {
+      max-width:var(--container-max);
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== HOME PAGE ========== -->
+<div class="page active" id="page-home">
+  <div class="status-bar"></div>
+  <div class="header">
+    <div class="header-top">
+      <h1 class="logo">livin<span>in</span>bintaro</h1>
+      <div class="header-icons">
+        <button aria-label="Notifications" onclick="showToast('Notifikasi belum tersedia')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </button>
+        <button aria-label="Messages" onclick="showToast('Chat belum tersedia')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="search-bar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="home-search" placeholder="Cari alamat, cluster, area..." onkeydown="if(event.key==='Enter')homeSearch()">
+    </div>
+  </div>
+
+  <div class="filters" id="home-filters"></div>
+
+  <div class="ptr-indicator" id="ptr-indicator"><span class="ptr-spinner"></span> Memuat ulang...</div>
+
+  <div class="content">
+    <div class="stats-banner" id="home-stats">
+      <div class="stat-item"><div class="stat-value" id="stat-listings">—</div><div class="stat-label">Listings</div></div>
+      <div class="stat-item"><div class="stat-value" id="stat-rumah">—</div><div class="stat-label">Rumah</div></div>
+      <div class="stat-item"><div class="stat-value" id="stat-sektor">9</div><div class="stat-label">Sektor</div></div>
+    </div>
+
+    <div class="section-header">
+      <h2 class="section-title"><span style="color:#E63946">●</span> Hot Listings</h2>
+      <button class="section-link" onclick="switchPage('search')">Lihat semua →</button>
+    </div>
+    <div class="featured-scroll" id="hot-listings-container">
+      <div class="skeleton skeleton-featured"></div>
+      <div class="skeleton skeleton-featured"></div>
+    </div>
+
+    <div class="section-header">
+      <h2 class="section-title">Listing Terbaru</h2>
+      <button class="section-link" onclick="switchPage('search')">Filter →</button>
+    </div>
+    <div id="latest-listings-container">
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SEARCH PAGE ========== -->
+<div class="page" id="page-search">
+  <div class="status-bar"></div>
+  <div class="header">
+    <div class="header-top">
+      <h1 class="logo">Cari Property</h1>
+    </div>
+    <div class="search-bar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="search-input" placeholder="Cari alamat, cluster, area..." onkeydown="if(event.key==='Enter')doSearch()">
+    </div>
+  </div>
+
+  <div class="search-filters">
+    <div class="filter-row">
+      <div class="form-group" style="margin-bottom:0">
+        <select id="search-property-type">
+          <option value="">Tipe Properti</option>
+          <option value="rumah">Rumah</option>
+          <option value="apartemen">Apartemen</option>
+          <option value="kavling">Kavling</option>
+          <option value="ruko">Ruko</option>
+          <option value="gudang">Gudang</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <select id="search-listing-type">
+          <option value="">Jual/Sewa</option>
+          <option value="jual">Dijual</option>
+          <option value="sewa">Disewa</option>
+        </select>
+      </div>
+    </div>
+    <div class="filter-row">
+      <div class="form-group" style="margin-bottom:0">
+        <select id="search-min-price">
+          <option value="">Harga Min</option>
+          <option value="100000000">100 Juta</option>
+          <option value="500000000">500 Juta</option>
+          <option value="1000000000">1 Miliar</option>
+          <option value="2000000000">2 Miliar</option>
+          <option value="5000000000">5 Miliar</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <select id="search-max-price">
+          <option value="">Harga Max</option>
+          <option value="500000000">500 Juta</option>
+          <option value="1000000000">1 Miliar</option>
+          <option value="2000000000">2 Miliar</option>
+          <option value="5000000000">5 Miliar</option>
+          <option value="10000000000">10 Miliar</option>
+          <option value="50000000000">50 Miliar+</option>
+        </select>
+      </div>
+    </div>
+    <div class="filter-row">
+      <div class="form-group" style="margin-bottom:0">
+        <select id="search-bedrooms">
+          <option value="">Kamar Tidur</option>
+          <option value="1">1+</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+          <option value="4">4+</option>
+          <option value="5">5+</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <select id="search-sektor">
+          <option value="">Area/Sektor</option>
+          <option value="1">Sektor 1</option>
+          <option value="2">Sektor 2</option>
+          <option value="3">Sektor 3</option>
+          <option value="4">Sektor 4</option>
+          <option value="5">Sektor 5</option>
+          <option value="6">Sektor 6</option>
+          <option value="7">Sektor 7</option>
+          <option value="8">Sektor 8</option>
+          <option value="9">Sektor 9</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="doSearch()" style="margin-top:4px;">🔍 Cari Sekarang</button>
+  </div>
+
+  <div class="search-results" id="search-results">
+    <div class="empty-state">
+      <div class="icon">🔍</div>
+      <p>Gunakan filter di atas untuk mencari properti</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== DASHBOARD PAGE ========== -->
+<div class="page" id="page-dashboard">
+  <div class="status-bar"></div>
+  <div class="header">
+    <div class="header-top">
+      <h1 class="logo">Dashboard</h1>
+      <div class="header-icons">
+        <button aria-label="Refresh" onclick="loadDashboard()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content" style="padding-top:16px;" id="dashboard-content">
+    <!-- Will be populated by JS -->
+  </div>
+</div>
+
+<!-- ========== LEADS PAGE ========== -->
+<div class="page" id="page-leads">
+  <div class="status-bar"></div>
+  <div class="header">
+    <div class="header-top">
+      <h1 class="logo">Leads</h1>
+      <div class="header-icons">
+        <button aria-label="Add Lead" onclick="showAddLeadModal()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button aria-label="Refresh" onclick="loadLeads()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bucket-tabs" id="bucketTabs">
+    <div class="bucket-tab active" data-bucket="inbox" onclick="switchBucket('inbox')">📥 Inbox <span class="count" id="count-inbox">0</span></div>
+    <div class="bucket-tab" data-bucket="active" onclick="switchBucket('active')">🔥 Active <span class="count" id="count-active">0</span></div>
+    <div class="bucket-tab" data-bucket="follow_up" onclick="switchBucket('follow_up')">🔄 Follow Up <span class="count" id="count-follow_up">0</span></div>
+    <div class="bucket-tab" data-bucket="non_lead" onclick="switchBucket('non_lead')">👤 Non-Lead <span class="count" id="count-non_lead">0</span></div>
+    <div class="bucket-tab" data-bucket="closed" onclick="switchBucket('closed')">✅ Closed <span class="count" id="count-closed">0</span></div>
+  </div>
+
+  <div class="content" style="padding-top:16px;" id="leads-content">
+    <!-- Will be populated by JS -->
+  </div>
+</div>
+
+<!-- ========== PROFILE PAGE ========== -->
+<div class="page" id="page-profile">
+  <div class="status-bar"></div>
+  <div class="header">
+    <div class="header-top">
+      <h1 class="logo">Profile</h1>
+    </div>
+  </div>
+
+  <div class="content" style="padding-top:16px;" id="profile-content">
+    <!-- Will be populated by JS -->
+  </div>
+</div>
+
+<!-- ========== PROPERTY DETAIL OVERLAY ========== -->
+<div class="detail-overlay" id="detail-overlay">
+  <div class="detail-header">
+    <button onclick="closeDetail()" aria-label="Back">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h3 id="detail-title-header">Detail Properti</h3>
+    <button onclick="shareProperty()" aria-label="Share">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    </button>
+  </div>
+  <div id="detail-body">
+    <!-- Populated by JS -->
+  </div>
+  <div class="detail-actions" id="detail-actions" style="display:none;">
+    <button class="btn-wa" id="btn-wa-detail" onclick="waShareDetail()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Hubungi via WhatsApp
+    </button>
+    <button class="btn-share" onclick="shareProperty()" aria-label="Share">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ========== ADD LEAD MODAL ========== -->
+<div class="modal-backdrop" id="modal-add-lead">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Tambah Lead Baru</h3>
+      <button class="modal-close" onclick="closeModal('modal-add-lead')">&times;</button>
+    </div>
+    <div id="add-lead-alert"></div>
+    <div class="form-group">
+      <label>Nama *</label>
+      <input type="text" id="lead-name" placeholder="Nama lengkap">
+    </div>
+    <div class="form-group">
+      <label>Telepon *</label>
+      <input type="tel" id="lead-phone" placeholder="08xxxxxxxxxx">
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="lead-email" placeholder="email@example.com">
+    </div>
+    <div class="form-group">
+      <label>Sumber</label>
+      <select id="lead-source">
+        <option value="whatsapp">WhatsApp</option>
+        <option value="website">Website</option>
+        <option value="referral">Referral</option>
+        <option value="social_media">Social Media</option>
+        <option value="other">Lainnya</option>
+      </select>
+    </div>
+    <div class="filter-row">
+      <div class="form-group" style="margin-bottom:0">
+        <label>Budget Min</label>
+        <select id="lead-budget-min">
+          <option value="">Tanpa batas</option>
+          <option value="500000000">500 Jt</option>
+          <option value="1000000000">1 M</option>
+          <option value="1500000000">1.5 M</option>
+          <option value="2000000000">2 M</option>
+          <option value="3000000000">3 M</option>
+          <option value="5000000000">5 M</option>
+          <option value="10000000000">10 M</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>Budget Max</label>
+        <select id="lead-budget-max">
+          <option value="">Tanpa batas</option>
+          <option value="500000000">500 Jt</option>
+          <option value="1000000000">1 M</option>
+          <option value="1500000000">1.5 M</option>
+          <option value="2000000000">2 M</option>
+          <option value="3000000000">3 M</option>
+          <option value="5000000000">5 M</option>
+          <option value="10000000000">10 M</option>
+        </select>
+      </div>
+    </div>
+    <div class="filter-row">
+      <div class="form-group" style="margin-bottom:0">
+        <label>Tipe Properti</label>
+        <select id="lead-property-type">
+          <option value="">Semua</option>
+          <option value="rumah">Rumah</option>
+          <option value="apartemen">Apartemen</option>
+          <option value="kavling">Kavling</option>
+          <option value="ruko">Ruko</option>
+          <option value="tanah">Tanah</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>Status</label>
+        <select id="lead-status">
+          <option value="new">New</option>
+          <option value="contacted">Contacted</option>
+          <option value="appointment">Appointment</option>
+          <option value="showing">Showing</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Area / Sektor</label>
+      <input type="text" id="lead-area" placeholder="Sektor 9, Bintaro Jaya...">
+    </div>
+    <div class="form-group">
+      <label>Catatan</label>
+      <textarea id="lead-notes" placeholder="Kebutuhan klien, detail lainnya..."></textarea>
+    </div>
+    <button class="btn-primary" onclick="submitLead()">Simpan Lead</button>
+  </div>
+</div>
+
+<!-- ========== LEAD ACTIVITY MODAL ========== -->
+<div class="modal-backdrop" id="modal-lead-activity">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Tambah Aktivitas</h3>
+      <button class="modal-close" onclick="closeModal('modal-lead-activity')">&times;</button>
+    </div>
+    <div id="activity-alert"></div>
+    <div class="form-group">
+      <label>Tipe Aktivitas</label>
+      <select id="activity-type">
+        <option value="call">📞 Telepon</option>
+        <option value="whatsapp">💬 WhatsApp</option>
+        <option value="meeting">🤝 Meeting</option>
+        <option value="showing">🏠 Showing</option>
+        <option value="follow_up">📋 Follow Up</option>
+        <option value="note">📝 Catatan</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Catatan *</label>
+      <textarea id="activity-notes" placeholder="Detail aktivitas..."></textarea>
+    </div>
+    <input type="hidden" id="activity-lead-id">
+    <button class="btn-primary" onclick="submitActivity()">💾 Simpan Aktivitas</button>
+  </div>
+</div>
+
+<!-- ========== UPDATE STATUS MODAL ========== -->
+<div class="modal-backdrop" id="modal-update-status">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Update Status Lead</h3>
+      <button class="modal-close" onclick="closeModal('modal-update-status')">&times;</button>
+    </div>
+    <div class="form-group">
+      <label>Status Baru</label>
+      <select id="update-status-select">
+        <option value="new">New</option>
+        <option value="contacted">Contacted</option>
+        <option value="appointment">Appointment</option>
+        <option value="showing">Showing</option>
+        <option value="negotiation">Negotiation</option>
+        <option value="closed_won">Closed Won</option>
+        <option value="closed_lost">Closed Lost</option>
+      </select>
+    </div>
+    <input type="hidden" id="update-status-lead-id">
+    <button class="btn-primary" onclick="submitStatusUpdate()">✅ Update Status</button>
+  </div>
+</div>
+
+<!-- ========== HOT LISTING MODAL ========== -->
+<div class="hot-modal" id="hot-modal">
+  <div class="modal-content">
+    <h3>🔥 Tandai Hot Listing <button onclick="closeHotModal()">&times;</button></h3>
+    <div class="hot-reason-buttons">
+      <button class="hot-reason-btn" data-reason="price_drop" onclick="selectHotReason(this)">💰 Harga Turun</button>
+      <button class="hot-reason-btn" data-reason="urgent" onclick="selectHotReason(this)">⚡ Owner Urgent</button>
+      <button class="hot-reason-btn" data-reason="new" onclick="selectHotReason(this)">🆕 Listing Baru</button>
+      <button class="hot-reason-btn" data-reason="strategic" onclick="selectHotReason(this)">📍 Lokasi Strategis</button>
+    </div>
+    <textarea id="hot-note" placeholder="Catatan (opsional)..." rows="2"></textarea>
+    <button onclick="submitHotStatus()">🔥 Tandai Hot</button>
+    <button onclick="closeHotModal()">Batal</button>
+  </div>
+</div>
+
+<!-- ========== CHAT MODAL ========== -->
+<div class="chat-modal" id="chat-modal">
+  <div class="chat-header">
+    <button class="chat-back" onclick="closeChatModal()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div>
+      <div class="chat-name" id="chat-lead-name">—</div>
+      <div class="chat-phone" id="chat-lead-phone">—</div>
+    </div>
+  </div>
+  <div class="chat-messages" id="chat-messages">
+    <div class="chat-empty">Belum ada percakapan</div>
+  </div>
+  <div class="chat-input-bar">
+    <input type="text" id="chat-input" placeholder="Ketik pesan..." onkeydown="if(event.key==='Enter')sendChatMessage()">
+    <button onclick="sendChatMessage()" aria-label="Send">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+  <input type="hidden" id="chat-lead-id">
+</div>
+
+<!-- ========== LEAD DETAIL OVERLAY ========== -->
+<div class="lead-detail-overlay" id="lead-detail-overlay">
+  <div class="lead-detail-header">
+    <button onclick="closeLeadDetail()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h3 id="lead-detail-name">Lead Detail</h3>
+    <button onclick="closeLeadDetail()" style="font-size:0.78rem;opacity:0.8;">Tutup</button>
+  </div>
+  <div class="lead-detail-body" id="lead-detail-body">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- ========== TOAST ========== -->
+<div class="toast" id="toast"></div>
+
+<!-- ========== BOTTOM NAV ========== -->
+<nav class="bottom-nav" id="bottom-nav">
+  <a class="nav-logo" onclick="switchPage('home')" style="cursor:pointer;">
+    <span class="logo" style="font-size:1.1rem;">livin<span>in</span>bintaro</span>
+  </a>
+  <div class="nav-item active" onclick="switchPage('home')" tabindex="0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Home</span>
+  </div>
+  <div class="nav-item" onclick="switchPage('search')" tabindex="0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <span>Search</span>
+  </div>
+  <div class="nav-item" onclick="switchPage('dashboard')" style="position:relative;" tabindex="0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+    <span>Dashboard</span>
+  </div>
+  <div class="nav-item" onclick="switchPage('leads')" tabindex="0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <span>Leads</span>
+  </div>
+  <div class="nav-item" onclick="switchPage('profile')" tabindex="0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Profile</span>
+  </div>
+</nav>
+
+<script>
+// ===== CONFIG =====
+const API = window.location.origin + '/api';
+const SITE_URL = window.location.origin;
+let currentDetailListing = null;
+
+// ===== AUTH HELPERS =====
+function getToken() { return localStorage.getItem('lib_token'); }
+function setToken(t) { localStorage.setItem('lib_token', t); }
+function removeToken() { localStorage.removeItem('lib_token'); }
+function isLoggedIn() { return !!getToken(); }
+
+function authHeaders() {
+  const h = { 'Content-Type': 'application/json' };
+  const t = getToken();
+  if (t) h['Authorization'] = 'Bearer ' + t;
+  return h;
+}
+
+async function apiFetch(path, opts = {}) {
+  const url = API + path;
+  const defaults = { headers: authHeaders() };
+  const config = { ...defaults, ...opts, headers: { ...defaults.headers, ...(opts.headers || {}) } };
+  const res = await fetch(url, config);
+  if (res.status === 401) {
+    removeToken();
+    return { error: 'Sesi habis, silakan login ulang', status: 401 };
+  }
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    return { error: data.detail || `Error ${res.status}`, status: res.status };
+  }
+  return res.json();
+}
+
+// ===== TOAST =====
+function showToast(msg, duration = 2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ===== MODAL =====
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+
+// ===== PAGE NAVIGATION =====
+const pageNames = ['home', 'search', 'dashboard', 'leads', 'profile'];
+function switchPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const idx = pageNames.indexOf(page);
+  const target = document.getElementById('page-' + page);
+  target.style.opacity = '0';
+  target.classList.add('active');
+  requestAnimationFrame(() => { target.style.opacity = '1'; });
+  document.querySelectorAll('.nav-item')[idx >= 0 ? idx : 0].classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Load page data
+  if (page === 'dashboard') loadDashboard();
+  if (page === 'leads') { loadBucketCounts(); loadLeads(); }
+  if (page === 'profile') loadProfile();
+}
+
+// ===== FORMAT HELPERS =====
+function formatPrice(price) {
+  if (!price) return '—';
+  if (price >= 1000000000) {
+    const val = price / 1000000000;
+    const formatted = val % 1 === 0 ? val.toFixed(0) : (Number.isInteger(val * 10) ? val.toFixed(1) : val.toFixed(2).replace(/0+$/, ''));
+    return 'Rp ' + formatted + ' Mly';
+  }
+  if (price >= 100000000) {
+    const val = price / 1000000;
+    return 'Rp ' + (val % 1 === 0 ? val.toFixed(0) : val.toFixed(0)) + ' Jt';
+  }
+  if (price >= 1000000) {
+    const val = price / 1000000;
+    return 'Rp ' + (val % 1 === 0 ? val.toFixed(0) : val.toFixed(1)) + ' Jt';
+  }
+  return 'Rp ' + price.toLocaleString('id-ID');
+}
+
+function formatNumber(n) {
+  if (n === null || n === undefined) return '—';
+  return n.toLocaleString('id-ID');
+}
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  const now = new Date();
+  const diff = (now - d) / 1000;
+  if (diff < 60) return 'Baru saja';
+  if (diff < 3600) return Math.floor(diff / 60) + ' menit lalu';
+  if (diff < 86400) return Math.floor(diff / 3600) + ' jam lalu';
+  if (diff < 604800) return Math.floor(diff / 86400) + ' hari lalu';
+  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+const SVG_HOME = '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>';
+const SVG_LOC = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+function escapeAttr(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+
+function getDriveThumb(listing, size) {
+  size = size || 400;
+  if (listing.images && listing.images.length > 0) return listing.images[0];
+  if (listing.drive_folder_id) return 'https://drive.google.com/thumbnail?id=' + listing.drive_folder_id + '&sz=w' + size;
+  return null;
+}
+
+// ===== BUILD LISTING CARDS =====
+function buildFeaturedCard(listing) {
+  const isSewa = listing.listing_type === 'sewa' || listing.listing_type === 'disewa';
+  const badge = isSewa ? 'badge-sewa' : 'badge-jual';
+  const badgeText = isSewa ? 'Disewa' : 'Dijual';
+  const price = listing.price_label || formatPrice(listing.price);
+  const safeTitle = escapeAttr(listing.title);
+  const thumbUrl = getDriveThumb(listing, 300);
+  const img = thumbUrl
+    ? `<div class="card-img-container" style="position:relative"><img src="${thumbUrl}" alt="${safeTitle}" loading="lazy" style="width:100%;height:140px;object-fit:cover;background:var(--gray-200);" onerror="this.parentElement.innerHTML='<div class=\'card-image-placeholder no-photo-placeholder\' style=\'height:140px\'><svg width=\\'40\\' height=\\'40\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\' opacity=\\'0.5\\'><path d=\\'m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\\'/><polyline points=\\'9 22 9 12 15 12 15 22\\'/></svg><span class=\\'no-photo-text\\'>Belum ada foto</span></div>'"><span class="card-badge ${badge}" style="position:absolute;top:10px;left:10px;">${badgeText}</span>${listing.is_hot && listing.hot_reason ? '<span class="hot-badge">' + (listing.hot_reason === "sheet" ? "📊 Sheet" : "👤 Manual") + '</span>' : ''}${listing.is_hot ? '<span class="card-badge badge-hot" style="position:absolute;top:10px;right:10px">HOT' + (listing.hot_reason ? (listing.hot_reason === "sheet" ? " 📊" : " 👤") : "") + '</span>' : ''}</div>`
+    : `<div class="card-image-placeholder no-photo-placeholder" style="position:relative;height:140px"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="no-photo-text">Belum ada foto</span><span class="card-badge ${badge}" style="position:absolute;top:10px;left:10px;">${badgeText}</span>${listing.is_hot ? '<span class="card-badge badge-hot" style="position:absolute;top:10px;right:10px">HOT' + (listing.hot_reason ? (listing.hot_reason === "sheet" ? " 📊" : " 👤") : "") + '</span>' : ''}</div>`;
+  const specs = [];
+  if (listing.bedrooms) specs.push(`KT ${listing.bedrooms}`);
+  if (listing.bathrooms) specs.push(`KM ${listing.bathrooms}`);
+  if (listing.land_area) specs.push(`LT ${listing.land_area}m²`);
+
+  return `<div class="featured-card" data-slug="${escapeAttr(listing.slug)}" tabindex="0" role="button">
+    ${img}
+    <div class="card-body">
+      <div class="card-title">${escapeHtml(listing.title) || '—'}</div>
+      <div class="card-price-tag">${price}</div>
+      <div class="card-specs">${specs.map(s => `<span class="spec">${s}</span>`).join('')}</div>
+    </div>
+  </div>`;
+}
+
+function buildPropertyCard(listing) {
+  const isSewa = listing.listing_type === 'sewa' || listing.listing_type === 'disewa';
+  const badge = isSewa ? 'badge-sewa' : 'badge-jual';
+  const badgeText = isSewa ? 'Disewa' : 'Dijual';
+  const price = listing.price_label || formatPrice(listing.price);
+  const priceNote = isSewa ? '<small>/tahun</small>' : '';
+  const safeTitle = escapeAttr(listing.title);
+  const thumbUrl2 = getDriveThumb(listing, 400);
+  const img = thumbUrl2
+    ? `<div class="card-img-container" style="position:relative"><img src="${thumbUrl2}" alt="${safeTitle}" loading="lazy" style="width:100%;height:200px;object-fit:cover;background:var(--gray-200);" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="card-image-placeholder no-photo-placeholder" style="position:relative;display:none"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="no-photo-text">Belum ada foto</span></div><span class="card-badge ${badge}" style="position:absolute;top:12px;left:12px">${badgeText}</span><div class="card-price-overlay"><div class="card-price">${price} ${priceNote}</div></div></div>`
+    : `<div class="card-image-placeholder no-photo-placeholder" style="position:relative"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="no-photo-text">Belum ada foto</span><span class="card-badge ${badge}">${badgeText}</span><div class="card-price-overlay"><div class="card-price">${price} ${priceNote}</div></div></div>`;
+
+  const specs = [];
+  if (listing.bedrooms) specs.push(`KT ${listing.bedrooms}`);
+  if (listing.bathrooms) specs.push(`KM ${listing.bathrooms}`);
+  if (listing.land_area) specs.push(`LT ${listing.land_area}m²`);
+
+  const location = [listing.sektor ? `Sektor ${listing.sektor}` : null, listing.cluster].filter(Boolean).join(' · ');
+
+  const waMsg = encodeURIComponent(`Halo, saya tertarik dengan properti ${listing.title} - ${price}. Bisa info lebih lanjut?`);
+
+  return `<div class="property-card" data-slug="${escapeAttr(listing.slug)}" tabindex="0" role="button">
+    ${img}
+    <div class="card-body">
+      <div class="card-title">${escapeHtml(listing.title) || '—'}</div>
+      <div class="card-location">${SVG_LOC} ${escapeHtml(location) || 'Bintaro Jaya'}</div>
+      <div class="card-specs">${specs.map(s => `<span class="spec">${s}</span>`).join('')}</div>
+    </div>
+    <div class="card-footer">
+      <div class="card-actions">
+        <button onclick="event.stopPropagation();window.open('https://wa.me/62811309991?text=${waMsg}','_blank')" aria-label="WhatsApp" style="color:#25D366;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ===== SHARE =====
+async function shareProperty() {
+  if (!currentDetailListing) return;
+  const l = currentDetailListing;
+  const price = l.price_label || formatPrice(l.price);
+  const shareData = {
+    title: (l.title || 'Properti') + ' — ' + price,
+    text: 'Lihat properti ini di livininbintaro',
+    url: SITE_URL + '?listing=' + l.slug
+  };
+  if (navigator.share) {
+    try { await navigator.share(shareData); } catch(e) { /* user cancelled */ }
+  } else {
+    try {
+      await navigator.clipboard.writeText(shareData.url);
+      showToast('Link disalin ke clipboard!');
+    } catch(e) {
+      showToast('Gagal menyalin link');
+    }
+  }
+}
+
+function waShareDetail() {
+  if (!currentDetailListing) return;
+  const l = currentDetailListing;
+  const price = l.price_label || formatPrice(l.price);
+  const text = `Check out this property: ${l.title} - ${price} - ${SITE_URL}?listing=${l.slug}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+// ===== HOME PAGE =====
+let currentFilter = {};
+const filterOptions = [
+  { label: 'Semua', params: {} },
+  { label: 'Dijual', params: { listing_type: 'jual' } },
+  { label: 'Disewa', params: { listing_type: 'sewa' } },
+  { label: 'Rumah', params: { property_type: 'rumah' } },
+  { label: 'Apartemen', params: { property_type: 'apartemen' } },
+  { label: 'Kavling', params: { property_type: 'kavling' } },
+  { label: 'Ruko', params: { property_type: 'ruko' } },
+];
+
+function initFilters() {
+  const container = document.getElementById('home-filters');
+  container.innerHTML = filterOptions.map((f, i) =>
+    `<div class="filter-chip ${i === 0 ? 'active' : ''}" tabindex="0" onclick="applyFilter(${i})" data-idx="${i}">${f.label}</div>`
+  ).join('');
+}
+
+function applyFilter(idx) {
+  document.querySelectorAll('#home-filters .filter-chip').forEach((c, i) => {
+    c.classList.toggle('active', i === idx);
+  });
+  currentFilter = filterOptions[idx].params;
+  loadLatestListings();
+}
+
+function homeSearch() {
+  const q = document.getElementById('home-search').value.trim();
+  if (q) {
+    document.getElementById('search-input').value = q;
+    switchPage('search');
+    doSearch();
+  }
+}
+
+async function loadHomeStats() {
+  if (isLoggedIn()) {
+    const data = await apiFetch('/dashboard/stats');
+    if (!data.error) {
+      document.getElementById('stat-listings').textContent = formatNumber(data.total_listings || 0);
+      document.getElementById('stat-rumah').textContent = formatNumber(data.total_rumah || 0);
+      return;
+    }
+  }
+  // Fallback: use lightweight public stats API
+  const stats = await apiFetch('/public/stats');
+  if (stats && !stats.error) {
+    document.getElementById('stat-listings').textContent = formatNumber(stats.total_listings || 0);
+    document.getElementById('stat-rumah').textContent = formatNumber(stats.total_rumah || 0);
+  } else {
+    document.getElementById('stat-listings').textContent = '—';
+    document.getElementById('stat-rumah').textContent = '—';
+  }
+}
+
+async function loadHotListings() {
+  const container = document.getElementById('hot-listings-container');
+  container.innerHTML = '<div class="skeleton skeleton-featured"></div><div class="skeleton skeleton-featured"></div>';
+  const activePropertyType = document.querySelector('.filter-chip.active')?.dataset?.propertyType;
+  const url = activePropertyType ? `/listings/hot?property_type=${activePropertyType}` : '/listings/hot';
+  const data = await apiFetch(url);
+  if (data.error) {
+    container.innerHTML = '<div class="empty-state" style="padding:20px;width:100%"><p>Gagal memuat hot listings</p></div>';
+    return;
+  }
+  if (!Array.isArray(data) || data.length === 0) {
+    container.innerHTML = '<div class="empty-state" style="padding:20px;width:100%;text-align:center;"><div class="icon">🔥</div><p style="font-size:0.85rem;color:var(--gray-500)">Belum ada hot listing</p></div>';
+    return;
+  }
+  container.innerHTML = data.map(l => buildFeaturedCard(l)).join('');
+}
+// ===== HOT LISTING FUNCTIONS =====
+let hotTargetId = null;
+let selectedHotReason = null;
+
+function openHotModal(listingId) {
+  hotTargetId = listingId;
+  selectedHotReason = null;
+  document.getElementById('hot-note').value = '';
+  document.querySelectorAll('.hot-reason-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('hot-modal').classList.add('active');
+}
+
+function closeHotModal() {
+  document.getElementById('hot-modal').classList.remove('active');
+}
+
+function selectHotReason(btn) {
+  document.querySelectorAll('.hot-reason-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedHotReason = btn.dataset.reason;
+}
+
+async function submitHotStatus() {
+  if (!hotTargetId) return;
+  const note = document.getElementById('hot-note').value;
+  const params = new URLSearchParams();
+  if (selectedHotReason) params.set('hot_reason', selectedHotReason);
+  if (note) params.set('hot_note', note);
+  
+  try {
+    const resp = await fetch(`/api/listings/${hotTargetId}/toggle-hot?${params}`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('lib_token')}` }
+    });
+    if (resp.ok) {
+      closeHotModal();
+      showToast('Hot listing updated! 🔥');
+      loadHotListings();
+      if (currentPage === 'search') {
+        doSearch();
+      }
+    }
+  } catch(e) {
+    showToast('Error updating hot status');
+  }
+}
+
+async function toggleHotOff(listingId) {
+  try {
+    const resp = await fetch(`/api/listings/${listingId}/toggle-hot`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('lib_token')}` }
+    });
+    if (resp.ok) {
+      showToast('Removed from hot listings');
+      loadHotListings();
+      if (currentPage === 'search') {
+        doSearch();
+      }
+    }
+  } catch(e) {
+    showToast('Error updating hot status');
+  }
+}
+
+
+let latestListingsSkip = 0;
+const LISTINGS_PER_PAGE = 20;
+let latestListingsHasMore = true;
+
+async function loadLatestListings(append = false) {
+  const container = document.getElementById('latest-listings-container');
+  if (!append) {
+    latestListingsSkip = 0;
+    latestListingsHasMore = true;
+    container.innerHTML = '<div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div>';
+  }
+
+  const params = new URLSearchParams({ limit: String(LISTINGS_PER_PAGE), skip: String(latestListingsSkip), ...currentFilter });
+  const data = await apiFetch('/listings/?' + params.toString());
+
+  if (data.error) {
+    if (!append) container.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Gagal memuat listing</p></div>';
+    return;
+  }
+  if (!Array.isArray(data) || data.length === 0) {
+    if (!append) {
+      container.innerHTML = '<div class="empty-state"><div class="icon">🏠</div><p>Belum ada listing tersedia</p></div>';
+    }
+    latestListingsHasMore = false;
+    removeLoadMoreBtn();
+    return;
+  }
+
+  const html = data.map(l => buildPropertyCard(l)).join('');
+  if (append) {
+    removeLoadMoreBtn();
+    container.insertAdjacentHTML('beforeend', html);
+  } else {
+    container.innerHTML = html;
+  }
+
+  latestListingsSkip += data.length;
+  latestListingsHasMore = data.length >= LISTINGS_PER_PAGE;
+
+  if (latestListingsHasMore) {
+    container.insertAdjacentHTML('beforeend', '<button class="load-more-btn" id="btn-load-more" onclick="loadMoreListings()">Muat lebih banyak</button>');
+  }
+}
+
+function removeLoadMoreBtn() {
+  const btn = document.getElementById('btn-load-more');
+  if (btn) btn.remove();
+}
+
+async function loadMoreListings() {
+  const btn = document.getElementById('btn-load-more');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="load-more-spinner"></span> Memuat...';
+  }
+  await loadLatestListings(true);
+}
+
+// ===== SEARCH PAGE =====
+async function doSearch() {
+  const container = document.getElementById('search-results');
+  container.innerHTML = '<div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div>';
+
+  const params = new URLSearchParams();
+  const q = document.getElementById('search-input').value.trim();
+  if (q) params.set('search', q);
+
+  const pt = document.getElementById('search-property-type').value;
+  if (pt) params.set('property_type', pt);
+
+  const lt = document.getElementById('search-listing-type').value;
+  if (lt) params.set('listing_type', lt);
+
+  const minP = document.getElementById('search-min-price').value;
+  if (minP) params.set('min_price', minP);
+
+  const maxP = document.getElementById('search-max-price').value;
+  if (maxP) params.set('max_price', maxP);
+
+  const beds = document.getElementById('search-bedrooms').value;
+  if (beds) params.set('min_bedrooms', beds);
+
+  const sektor = document.getElementById('search-sektor').value;
+  if (sektor) params.set('sektor', sektor);
+
+  const data = await apiFetch('/listings/?' + params.toString());
+  if (data.error) {
+    container.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>${data.error}</p></div>`;
+    return;
+  }
+  if (!Array.isArray(data) || data.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><p>Tidak ada properti ditemukan.<br>Coba ubah filter pencarian.</p></div>';
+    return;
+  }
+  container.innerHTML = `<p style="font-size:0.85rem;color:var(--gray-500);margin-bottom:12px;">${data.length} hasil ditemukan</p>` +
+    data.map(l => buildPropertyCard(l)).join('');
+}
+
+// ===== DETAIL PAGE =====
+async function openDetail(slug) {
+  const overlay = document.getElementById('detail-overlay');
+  const body = document.getElementById('detail-body');
+  const actions = document.getElementById('detail-actions');
+  body.innerHTML = '<div style="padding:40px;text-align:center"><div class="skeleton" style="height:240px;margin-bottom:16px;"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text" style="width:80%"></div></div>';
+  actions.style.display = 'none';
+  overlay.classList.add('active');
+  document.body.classList.add('detail-open');
+  if (window.innerWidth < 768) document.getElementById('bottom-nav').style.display = 'none';
+  history.pushState({ detail: true }, '', `/listing/${slug}`);
+
+  const data = await apiFetch('/listings/' + slug);
+  if (data.error) {
+    body.innerHTML = `<div class="empty-state" style="padding-top:60px"><div class="icon">⚠️</div><p>${data.error}</p></div>`;
+    return;
+  }
+
+  currentDetailListing = data;
+  document.getElementById('detail-title-header').textContent = data.title || 'Detail Properti';
+
+  // Images
+  let imagesHtml = '';
+  if (data.images && data.images.length > 0) {
+    imagesHtml = `<div class="image-carousel" id="detail-carousel">
+      ${data.images.map((img, i) => `<img src="${img}" alt="${data.title}" class="${i === 0 ? 'active' : ''}" data-idx="${i}" loading="lazy">`).join('')}
+      ${data.images.length > 1 ? `<button class="carousel-btn prev" onclick="carouselNav(-1)">‹</button><button class="carousel-btn next" onclick="carouselNav(1)">›</button>` : ''}
+      <div class="detail-image-nav">${data.images.map((_, i) => `<div class="detail-image-dot ${i === 0 ? 'active' : ''}" data-idx="${i}"></div>`).join('')}</div>
+    </div>`;
+  } else {
+    imagesHtml = `<div class="detail-images">${SVG_HOME}</div>`;
+  }
+
+  const price = data.price_label || formatPrice(data.price);
+  const location = [data.sektor ? `Sektor ${data.sektor}` : null, data.address].filter(Boolean).join(' · ') || 'Bintaro Jaya';
+
+  // Specs grid
+  const specItems = [];
+  if (data.bedrooms) specItems.push({ v: data.bedrooms, l: 'Kamar Tidur' });
+  if (data.bathrooms) specItems.push({ v: data.bathrooms, l: 'Kamar Mandi' });
+  if (data.land_area) specItems.push({ v: data.land_area + ' m²', l: 'Luas Tanah' });
+  if (data.building_area) specItems.push({ v: data.building_area + ' m²', l: 'Luas Bangunan' });
+  if (data.floors) specItems.push({ v: data.floors, l: 'Lantai' });
+  if (data.electricity) specItems.push({ v: data.electricity + ' VA', l: 'Listrik' });
+  if (data.certificate) specItems.push({ v: data.certificate, l: 'Sertifikat' });
+  if (data.carport) specItems.push({ v: data.carport, l: 'Carport' });
+
+  // Tags
+  const tags = [];
+  if (data.property_type) tags.push(data.property_type.charAt(0).toUpperCase() + data.property_type.slice(1));
+  if (data.listing_type) tags.push((data.listing_type === 'jual' || data.listing_type === 'dijual') ? 'Dijual' : 'Disewa');
+  if (data.is_hot) tags.push('🔥 Hot');
+  if (data.sektor) tags.push('Sektor ' + data.sektor);
+  if (data.cpa_code) tags.push('CPA ' + data.cpa_code);
+
+  body.innerHTML = `
+    ${imagesHtml}
+    <div class="detail-content">
+      <div class="detail-price">${price}</div>
+      <div class="detail-title">${data.title || '—'}</div>
+      <div class="detail-location">${SVG_LOC} ${location}</div>
+
+      ${specItems.length > 0 ? `<div class="detail-specs-grid">${specItems.map(s => `<div class="detail-spec"><div class="detail-spec-value">${s.v}</div><div class="detail-spec-label">${s.l}</div></div>`).join('')}</div>` : ''}
+
+      ${tags.length > 0 ? `<div class="detail-section"><h4>Info</h4><div class="detail-tags">${tags.map(t => `<span class="detail-tag">${t}</span>`).join('')}</div></div>` : ''}
+
+      ${data.description ? `<div class="detail-section"><h4>Deskripsi</h4><p>${data.description.replace(/\n/g, '<br>')}</p></div>` : ''}
+
+      ${data.notes ? `<div class="detail-section"><h4>Catatan</h4><p>${data.notes.replace(/\n/g, '<br>')}</p></div>` : ''}
+
+      ${isLoggedIn() ? `<div class="detail-section" style="margin-top:12px">${data.is_hot && data.hot_reason ? '<div style="background:var(--accent-light);padding:10px 14px;border-radius:8px;margin-bottom:12px;font-size:0.85rem;display:flex;align-items:center;gap:8px;"><span style="font-size:1.2rem">' + (data.hot_reason === "sheet" ? "📊" : "👤") + '</span><span><strong>Hot Listing</strong> — ' + (data.hot_reason === "sheet" ? "Auto dari spreadsheet" : "Ditandai manual") + '</span></div>' : ''}
+        <button onclick="${data.is_hot ? "toggleHotOff('" + data.slug + "')" : "openHotModal('" + data.slug + "')"}" 
+          style="width:100%;padding:14px 20px;border:none;border-radius:12px;font-size:0.95rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;color:white;background:${data.is_hot ? '#dc3545' : '#D4A843'}">
+          ${data.is_hot ? '🔥 Remove Hot Listing' : '🔥 Set as Hot Listing'}
+        </button>
+      </div>` : ''}
+    </div>
+  `;
+
+  actions.style.display = 'flex';
+}
+
+let carouselIdx = 0;
+function carouselNav(dir) {
+  const carousel = document.getElementById('detail-carousel');
+  if (!carousel) return;
+  const imgs = carousel.querySelectorAll('img');
+  const dots = carousel.querySelectorAll('.detail-image-dot');
+  if (imgs.length === 0) return;
+  imgs[carouselIdx].classList.remove('active');
+  if (dots[carouselIdx]) dots[carouselIdx].classList.remove('active');
+  carouselIdx = (carouselIdx + dir + imgs.length) % imgs.length;
+  imgs[carouselIdx].classList.add('active');
+  if (dots[carouselIdx]) dots[carouselIdx].classList.add('active');
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('active');
+  document.body.classList.remove('detail-open');
+  document.getElementById('detail-actions').style.display = 'none';
+  document.getElementById('bottom-nav').style.display = '';
+  currentDetailListing = null;
+  carouselIdx = 0;
+}
+
+// ===== DASHBOARD =====
+async function loadDashboard() {
+  const container = document.getElementById('dashboard-content');
+
+  if (!isLoggedIn()) {
+    container.innerHTML = `
+      <div class="login-form">
+        <h2>🔐 Login Required</h2>
+        <p>Silakan login untuk mengakses dashboard</p>
+        <div id="dash-login-alert"></div>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="dash-username" placeholder="Username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="dash-password" placeholder="Password" onkeydown="if(event.key==='Enter')dashLogin()">
+        </div>
+        <button class="btn-primary" onclick="dashLogin()">Login</button>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = '<div class="skeleton" style="height:100px;margin-bottom:14px"></div><div class="skeleton" style="height:100px;margin-bottom:14px"></div><div class="skeleton" style="height:150px;margin-bottom:14px"></div>';
+
+  const data = await apiFetch('/dashboard/stats');
+  if (data.error) {
+    if (data.status === 401) {
+      removeToken();
+      loadDashboard();
+      return;
+    }
+    container.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>${data.error}</p></div>`;
+    return;
+  }
+
+  const s = data;
+  const totalLeads = s.total_leads || 0;
+  const pNew = s.pipeline?.new || 0;
+  const pContacted = s.pipeline?.contacted || 0;
+  const pAppt = s.pipeline?.appointment || 0;
+  const pShowing = s.pipeline?.showing || 0;
+  const pClosed = s.pipeline?.closed_won || 0;
+
+  container.innerHTML = `
+    <div class="dash-row">
+      <div class="dash-metric">
+        <div class="dash-metric-label">Active Listings</div>
+        <div class="dash-metric-value">${formatNumber(s.total_listings || 0)}</div>
+      </div>
+      <div class="dash-metric">
+        <div class="dash-metric-label">Total Leads</div>
+        <div class="dash-metric-value">${formatNumber(totalLeads)}</div>
+      </div>
+    </div>
+    <div class="dash-row">
+      <div class="dash-metric">
+        <div class="dash-metric-label">Hot Listings</h2>
+        <div class="dash-metric-value">${formatNumber(s.hot_listings || 0)}</div>
+        <div class="dash-metric-sub">🔥 Aktif</div>
+      </div>
+      <div class="dash-metric">
+        <div class="dash-metric-label">Dijual / Disewa</div>
+        <div class="dash-metric-value" style="font-size:1.2rem">${formatNumber(s.listings_jual || 0)} / ${formatNumber(s.listings_sewa || 0)}</div>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <h2 class="section-title" style="margin-bottom:12px;">Lead Pipeline</h2>
+      <div class="pipeline">
+        <div class="pipeline-stage stage-new"><div class="count">${pNew}</div><div class="label">New</div></div>
+        <div class="pipeline-stage stage-contact"><div class="count">${pContacted}</div><div class="label">Contact</div></div>
+        <div class="pipeline-stage stage-appt"><div class="count">${pAppt}</div><div class="label">Appoint</div></div>
+        <div class="pipeline-stage stage-showing"><div class="count">${pShowing}</div><div class="label">Showing</div></div>
+        <div class="pipeline-stage stage-closed"><div class="count">${pClosed}</div><div class="label">Closed</div></div>
+      </div>
+      ${totalLeads > 0 ? `<div class="pipeline-bars">
+        ${[{l:'New',v:pNew,c:'#3182ce'},{l:'Contact',v:pContacted,c:'#805ad5'},{l:'Appoint',v:pAppt,c:'#d69e2e'},{l:'Showing',v:pShowing,c:'#dd6b20'},{l:'Closed',v:pClosed,c:'#38a169'}].map(b => {
+          const pct = Math.round((b.v / totalLeads) * 100);
+          return `<div class="pipeline-bar-row"><span class="pipeline-bar-label">${b.l}</span><div class="pipeline-bar-track"><div class="pipeline-bar-fill" style="width:${Math.max(pct, b.v > 0 ? 8 : 0)}%;background:${b.c}"><span>${pct}%</span></div></div></div>`;
+        }).join('')}
+      </div>` : ''}
+    </div>
+
+    <div class="dash-card">
+      <h2 class="section-title" style="margin-bottom:8px;">Dijual vs Disewa</h2>
+      ${(() => {
+        const jual = s.listings_jual || 0;
+        const sewa = s.listings_sewa || 0;
+        const total = jual + sewa;
+        if (total === 0) return '<p style="font-size:0.82rem;color:var(--gray-500)">Belum ada data</p>';
+        const jualPct = Math.round((jual / total) * 100);
+        const sewaPct = 100 - jualPct;
+        return '<div class="ratio-bar-container"><div class="ratio-bar-track">' +
+          (jual > 0 ? '<div class="ratio-bar-segment" style="width:' + jualPct + '%;background:#38a169">' + jual + '</div>' : '') +
+          (sewa > 0 ? '<div class="ratio-bar-segment" style="width:' + sewaPct + '%;background:#3182ce">' + sewa + '</div>' : '') +
+          '</div><div class="ratio-bar-legend"><div class="ratio-legend-item"><div class="ratio-legend-dot" style="background:#38a169"></div>Dijual (' + jualPct + '%)</div><div class="ratio-legend-item"><div class="ratio-legend-dot" style="background:#3182ce"></div>Disewa (' + sewaPct + '%)</div></div></div>';
+      })()}
+    </div>
+
+    ${s.recent_activities && s.recent_activities.length > 0 ? `
+    <div class="dash-card">
+      <h2 class="section-title" style="margin-bottom:8px;">Recent Activity</h2>
+      ${s.recent_activities.map(a => `
+        <div class="activity-item">
+          <div class="activity-dot ${a.type === 'showing' ? 'dot-orange' : a.type === 'new_lead' ? 'dot-blue' : 'dot-green'}"></div>
+          <div>
+            <div class="activity-text">${a.description || a.notes || '—'}</div>
+            <div class="activity-time">${timeAgo(a.created_at)}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>` : ''}
+
+    <div class="dash-card">
+      <h2 class="section-title" style="margin-bottom:12px;">Quick Actions</h2>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <button class="btn-secondary btn-small" style="padding:14px" onclick="switchPage('leads');setTimeout(showAddLeadModal,300)">+ Add Lead</button>
+        <button class="btn-primary btn-small" style="padding:14px" onclick="switchPage('search')">🔍 Search</button>
+      </div>
+    </div>
+  `;
+}
+
+async function dashLogin() {
+  const username = document.getElementById('dash-username').value.trim();
+  const password = document.getElementById('dash-password').value;
+  const alertEl = document.getElementById('dash-login-alert');
+
+  if (!username || !password) {
+    alertEl.innerHTML = '<div class="alert alert-error">Username dan password harus diisi</div>';
+    return;
+  }
+
+  alertEl.innerHTML = '';
+  const data = await apiFetch('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ username, password })
+  });
+
+  if (data.error) {
+    alertEl.innerHTML = `<div class="alert alert-error">${data.error}</div>`;
+    return;
+  }
+
+  if (data.access_token || data.token) {
+    setToken(data.access_token || data.token);
+    showToast('✅ Login berhasil!');
+    loadDashboard();
+    loadHomeStats();
+  } else {
+    alertEl.innerHTML = '<div class="alert alert-error">Login gagal, coba lagi</div>';
+  }
+}
+
+// ===== LEADS =====
+let currentBucket = 'inbox';
+
+async function loadBucketCounts() {
+  try {
+    const res = await apiFetch('/leads/counts');
+    if (res && !res.error) {
+      ['inbox', 'active', 'follow_up', 'non_lead', 'closed'].forEach(b => {
+        const el = document.getElementById('count-' + b);
+        if (el) el.textContent = res[b] || 0;
+      });
+    }
+  } catch (e) { console.error('Failed to load bucket counts:', e); }
+}
+
+function switchBucket(bucket) {
+  currentBucket = bucket;
+  document.querySelectorAll('.bucket-tab').forEach(t => t.classList.remove('active'));
+  const tab = document.querySelector('[data-bucket="' + bucket + '"]');
+  if (tab) tab.classList.add('active');
+  loadLeads();
+}
+
+function bucketLabel(b) {
+  const labels = {inbox:'📥 Inbox', active:'🔥 Active', follow_up:'🔄 Follow Up', non_lead:'👤 Non-Lead', closed:'✅ Closed'};
+  return labels[b] || b;
+}
+
+function toggleMoveMenu(leadId) {
+  const menu = document.getElementById('move-menu-' + leadId);
+  document.querySelectorAll('.quick-move-menu.show').forEach(m => { if (m !== menu) m.classList.remove('show'); });
+  if (menu) menu.classList.toggle('show');
+}
+
+async function moveToBucket(leadId, bucket) {
+  try {
+    await apiFetch('/leads/' + leadId + '/bucket', { method: 'PUT', body: JSON.stringify({ bucket }) });
+    document.querySelectorAll('.quick-move-menu.show').forEach(m => m.classList.remove('show'));
+    showToast('✅ Lead dipindahkan ke ' + bucketLabel(bucket));
+    loadLeads();
+    loadBucketCounts();
+  } catch (e) { showToast('❌ Gagal memindahkan lead'); }
+}
+
+async function triggerAiScore(leadId) {
+  showToast('⏳ Scoring lead...');
+  try {
+    const res = await apiFetch('/leads/' + leadId + '/ai-score', { method: 'POST' });
+    if (res && !res.error) {
+      showToast('✅ Score: ' + res.score + ' (' + res.tier + ')');
+      loadLeads();
+      loadBucketCounts();
+    } else {
+      showToast('❌ ' + (res.error || 'Gagal scoring'));
+    }
+  } catch (e) { showToast('❌ Gagal scoring lead'); }
+}
+
+async function loadLeads() {
+  const container = document.getElementById('leads-content');
+
+  if (!isLoggedIn()) {
+    document.getElementById('bucketTabs').style.display = 'none';
+    container.innerHTML = `
+      <div class="login-form">
+        <h2>🔐 Login Required</h2>
+        <p>Silakan login untuk mengakses leads</p>
+        <div id="leads-login-alert"></div>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="leads-username" placeholder="Username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="leads-password" placeholder="Password" onkeydown="if(event.key==='Enter')leadsLogin()">
+        </div>
+        <button class="btn-primary" onclick="leadsLogin()">Login</button>
+      </div>`;
+    return;
+  }
+
+  document.getElementById('bucketTabs').style.display = 'flex';
+  container.innerHTML = '<div class="skeleton" style="height:100px;margin-bottom:12px"></div><div class="skeleton" style="height:100px;margin-bottom:12px"></div>';
+
+  const data = await apiFetch('/leads/?bucket=' + currentBucket);
+  if (data.error) {
+    if (data.status === 401) { removeToken(); loadLeads(); return; }
+    container.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>' + data.error + '</p></div>';
+    return;
+  }
+
+  if (!Array.isArray(data) || data.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">👥</div>
+        <p>Belum ada leads di bucket ini</p>
+        <button class="btn-primary btn-small" style="margin-top:16px;width:auto;padding:12px 24px;" onclick="showAddLeadModal()">+ Tambah Lead</button>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = data.map(lead => buildLeadCard(lead)).join('');
+  loadBucketCounts();
+}
+
+function buildLeadCard(lead) {
+  const statusClass = 'status-' + (lead.status || 'new').replace('_', '-').replace('closed-won','closed').replace('closed-lost','lost');
+  const statusLabel = (lead.status || 'new').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const tierClass = lead.ai_score >= 80 ? 'hot' : lead.ai_score >= 60 ? 'warm' : lead.ai_score >= 40 ? 'cool' : 'cold';
+  const tierLabel = tierClass.charAt(0).toUpperCase() + tierClass.slice(1);
+  const moveBuckets = ['inbox','active','follow_up','non_lead','closed'].filter(b => b !== (lead.bucket || 'inbox'));
+
+  return `<div class="lead-card" style="position:relative;">
+    <div class="lead-card-header">
+      <div>
+        <span class="lead-name">${lead.name || '—'}</span>
+        ${lead.source ? '<span class="source-badge">' + lead.source + '</span>' : ''}
+        ${lead.ai_score != null ? '<span class="ai-score-badge ' + tierClass + '">🎯 ' + lead.ai_score + ' ' + tierLabel + '</span>' : ''}
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span class="lead-status ${statusClass}">${statusLabel}</span>
+        <button onclick="toggleMoveMenu(${lead.id})" style="background:none;border:none;font-size:1.2rem;cursor:pointer;padding:4px 6px;color:var(--gray-500);">⋮</button>
+      </div>
+    </div>
+    ${lead.phone ? '<div class="lead-info">📞 ' + lead.phone + '</div>' : ''}
+    ${lead.budget_min || lead.budget_max ? '<div class="lead-info">💰 ' + formatPrice(lead.budget_min) + ' — ' + formatPrice(lead.budget_max) + '</div>' : ''}
+    ${lead.preferred_area ? '<div class="lead-info">📍 ' + lead.preferred_area + '</div>' : ''}
+    ${lead.preferred_type ? '<div class="lead-info">🏠 ' + lead.preferred_type + '</div>' : ''}
+    ${lead.ai_summary ? '<div class="ai-insight">💡 ' + lead.ai_summary + '</div>' : (lead.ai_score_reason ? '<div class="ai-insight">🎯 ' + lead.ai_score_reason + '</div>' : '')}
+    <div style="font-size:0.72rem;color:var(--gray-500);margin-top:6px">${timeAgo(lead.created_at)}</div>
+    <div class="lead-actions">
+      <button class="btn-secondary btn-small" onclick="showUpdateStatusModal(${lead.id},'${lead.status || 'new'}')">📋 Status</button>
+      <button class="btn-secondary btn-small" onclick="showActivityModal(${lead.id})">📝 Activity</button>
+      ${lead.phone ? '<button class="btn-small" style="padding:8px 16px;border:none;border-radius:var(--radius);background:#25D366;color:white;font-weight:600;font-size:0.82rem;cursor:pointer;" onclick="openChatModal(' + lead.id + ',\'' + (lead.name || '').replace(/'/g,"\\'") + '\',\'' + (lead.phone || '') + '\')">💬 Chat</button>' : ''}
+      ${lead.ai_score == null ? '<button class="btn-small" style="padding:8px 16px;border:none;border-radius:var(--radius);background:#8b5cf6;color:white;font-weight:600;font-size:0.82rem;cursor:pointer;" onclick="triggerAiScore(' + lead.id + ')">🎯 Score</button>' : ''}
+      <button class="btn-small" style="padding:8px 16px;border:none;border-radius:var(--radius);background:var(--primary);color:white;font-weight:600;font-size:0.82rem;cursor:pointer;" onclick="openLeadDetail(${lead.id})">Detail</button>
+    </div>
+    <div class="quick-move-menu" id="move-menu-${lead.id}">
+      ${moveBuckets.map(b => '<button onclick="moveToBucket(' + lead.id + ',\'' + b + '\')">' + bucketLabel(b) + '</button>').join('')}
+    </div>
+  </div>`;
+}
+
+async function leadsLogin() {
+  const username = document.getElementById('leads-username').value.trim();
+  const password = document.getElementById('leads-password').value;
+  const alertEl = document.getElementById('leads-login-alert');
+
+  if (!username || !password) {
+    alertEl.innerHTML = '<div class="alert alert-error">Username dan password harus diisi</div>';
+    return;
+  }
+
+  const data = await apiFetch('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ username, password })
+  });
+
+  if (data.error) {
+    alertEl.innerHTML = `<div class="alert alert-error">${data.error}</div>`;
+    return;
+  }
+
+  if (data.access_token || data.token) {
+    setToken(data.access_token || data.token);
+    showToast('✅ Login berhasil!');
+    loadLeads();
+  }
+}
+
+function showAddLeadModal() {
+  if (!isLoggedIn()) { showToast('Login dulu ya'); return; }
+  document.getElementById('lead-name').value = '';
+  document.getElementById('lead-phone').value = '';
+  document.getElementById('lead-email').value = '';
+  document.getElementById('lead-notes').value = '';
+  document.getElementById('lead-budget-min').value = '';
+  document.getElementById('lead-budget-max').value = '';
+  document.getElementById('lead-property-type').value = '';
+  document.getElementById('lead-area').value = '';
+  document.getElementById('lead-status').value = 'new';
+  document.getElementById('add-lead-alert').innerHTML = '';
+  openModal('modal-add-lead');
+}
+
+async function submitLead() {
+  const nameEl = document.getElementById('lead-name');
+  const phoneEl = document.getElementById('lead-phone');
+  const name = nameEl.value.trim();
+  const phone = phoneEl.value.trim();
+  const email = document.getElementById('lead-email').value.trim();
+  const source = document.getElementById('lead-source').value;
+  const notes = document.getElementById('lead-notes').value.trim();
+  const budgetMin = document.getElementById('lead-budget-min').value;
+  const budgetMax = document.getElementById('lead-budget-max').value;
+  const propertyType = document.getElementById('lead-property-type').value;
+  const area = document.getElementById('lead-area').value.trim();
+  const status = document.getElementById('lead-status').value;
+  const alertEl = document.getElementById('add-lead-alert');
+
+  nameEl.classList.remove('input-error');
+  phoneEl.classList.remove('input-error');
+  let hasError = false;
+  if (!name) { nameEl.classList.add('input-error'); hasError = true; }
+  if (!phone) { phoneEl.classList.add('input-error'); hasError = true; }
+  if (hasError) {
+    alertEl.innerHTML = '<div class="alert alert-error">Nama dan telepon wajib diisi</div>';
+    return;
+  }
+
+  const body = { name, phone, source, status };
+  if (email) body.email = email;
+  if (notes) body.notes = notes;
+  if (budgetMin) body.budget_min = parseInt(budgetMin);
+  if (budgetMax) body.budget_max = parseInt(budgetMax);
+  if (propertyType) body.preferred_type = propertyType;
+  if (area) body.preferred_area = area;
+
+  const data = await apiFetch('/leads/', {
+    method: 'POST',
+    body: JSON.stringify(body)
+  });
+
+  if (data.error) {
+    alertEl.innerHTML = `<div class="alert alert-error">${data.error}</div>`;
+    return;
+  }
+
+  closeModal('modal-add-lead');
+  showToast('✅ Lead berhasil ditambahkan!');
+  loadLeads();
+}
+
+function showUpdateStatusModal(leadId, currentStatus) {
+  document.getElementById('update-status-lead-id').value = leadId;
+  document.getElementById('update-status-select').value = currentStatus;
+  openModal('modal-update-status');
+}
+
+async function submitStatusUpdate() {
+  const leadId = document.getElementById('update-status-lead-id').value;
+  const status = document.getElementById('update-status-select').value;
+
+  const data = await apiFetch('/leads/' + leadId, {
+    method: 'PUT',
+    body: JSON.stringify({ status })
+  });
+
+  if (data.error) {
+    showToast('❌ ' + data.error);
+    return;
+  }
+
+  closeModal('modal-update-status');
+  showToast('✅ Status updated!');
+  loadLeads();
+}
+
+function showActivityModal(leadId) {
+  document.getElementById('activity-lead-id').value = leadId;
+  document.getElementById('activity-notes').value = '';
+  document.getElementById('activity-alert').innerHTML = '';
+  openModal('modal-lead-activity');
+}
+
+async function submitActivity() {
+  const leadId = document.getElementById('activity-lead-id').value;
+  const type = document.getElementById('activity-type').value;
+  const notes = document.getElementById('activity-notes').value.trim();
+  const alertEl = document.getElementById('activity-alert');
+
+  if (!notes) {
+    alertEl.innerHTML = '<div class="alert alert-error">Catatan wajib diisi</div>';
+    return;
+  }
+
+  const data = await apiFetch('/leads/' + leadId + '/activities', {
+    method: 'POST',
+    body: JSON.stringify({ activity_type: type, notes })
+  });
+
+  if (data.error) {
+    alertEl.innerHTML = `<div class="alert alert-error">${data.error}</div>`;
+    return;
+  }
+
+  closeModal('modal-lead-activity');
+  showToast('✅ Aktivitas ditambahkan!');
+  loadLeads();
+}
+
+// ===== WHATSAPP CHAT =====
+let chatLeadId = null;
+
+function openChatModal(leadId, name, phone) {
+  chatLeadId = leadId;
+  document.getElementById('chat-lead-id').value = leadId;
+  document.getElementById('chat-lead-name').textContent = name || '—';
+  document.getElementById('chat-lead-phone').textContent = phone || '—';
+  document.getElementById('chat-input').value = '';
+  document.getElementById('chat-modal').classList.add('active');
+  loadChatMessages(leadId);
+}
+
+function closeChatModal() {
+  document.getElementById('chat-modal').classList.remove('active');
+  chatLeadId = null;
+}
+
+async function loadChatMessages(leadId) {
+  const container = document.getElementById('chat-messages');
+  container.innerHTML = '<div class="chat-empty">Memuat...</div>';
+
+  const data = await apiFetch('/wa/messages/' + leadId + '?limit=100');
+  if (data.error) {
+    container.innerHTML = '<div class="chat-empty">Gagal memuat: ' + data.error + '</div>';
+    return;
+  }
+
+  if (!Array.isArray(data) || data.length === 0) {
+    container.innerHTML = '<div class="chat-empty">Belum ada percakapan WA</div>';
+    return;
+  }
+
+  // Messages come desc, reverse for chronological display
+  const messages = data.reverse();
+  let html = '';
+  let lastDate = '';
+
+  messages.forEach(m => {
+    const dt = m.created_at ? new Date(m.created_at) : new Date();
+    const dateStr = dt.toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' });
+    if (dateStr !== lastDate) {
+      html += '<div class="chat-date-sep">' + dateStr + '</div>';
+      lastDate = dateStr;
+    }
+    const timeStr = dt.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+    const dir = m.direction === 'outbound' ? 'outbound' : 'inbound';
+    html += '<div class="chat-bubble ' + dir + '">' +
+      '<div>' + (m.message || '').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>') + '</div>' +
+      '<div class="chat-time">' + timeStr + '</div>' +
+    '</div>';
+  });
+
+  container.innerHTML = html;
+  container.scrollTop = container.scrollHeight;
+}
+
+async function sendChatMessage() {
+  const input = document.getElementById('chat-input');
+  const message = input.value.trim();
+  const leadId = document.getElementById('chat-lead-id').value;
+  if (!message || !leadId) return;
+
+  input.value = '';
+  input.disabled = true;
+
+  // Optimistic append
+  const container = document.getElementById('chat-messages');
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+  container.innerHTML += '<div class="chat-bubble outbound">' +
+    '<div>' + message.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>') + '</div>' +
+    '<div class="chat-time">' + timeStr + ' ✓</div>' +
+  '</div>';
+  container.scrollTop = container.scrollHeight;
+
+  const data = await apiFetch('/wa/messages/' + leadId, {
+    method: 'POST',
+    body: JSON.stringify({ message })
+  });
+
+  input.disabled = false;
+  input.focus();
+
+  if (data.error) {
+    showToast('❌ Gagal kirim: ' + data.error);
+    return;
+  }
+
+  showToast('✅ Pesan terkirim via WA');
+}
+
+// ===== LEAD DETAIL =====
+let currentLeadDetail = null;
+
+async function openLeadDetail(leadId) {
+  const overlay = document.getElementById('lead-detail-overlay');
+  const body = document.getElementById('lead-detail-body');
+  overlay.classList.add('active');
+  body.innerHTML = '<div class="skeleton" style="height:100px;margin:12px 0"></div><div class="skeleton" style="height:80px;margin:12px 0"></div>';
+
+  const lead = await apiFetch('/leads/' + leadId);
+  if (lead.error) {
+    body.innerHTML = '<div class="empty-state"><p>' + lead.error + '</p></div>';
+    return;
+  }
+  currentLeadDetail = lead;
+  document.getElementById('lead-detail-name').textContent = lead.name || 'Lead Detail';
+  renderLeadDetail(lead);
+}
+
+function closeLeadDetail() {
+  document.getElementById('lead-detail-overlay').classList.remove('active');
+  currentLeadDetail = null;
+}
+
+function renderLeadDetail(lead) {
+  const body = document.getElementById('lead-detail-body');
+  const tierClass = lead.ai_score >= 80 ? 'hot' : lead.ai_score >= 60 ? 'warm' : lead.ai_score >= 40 ? 'cool' : 'cold';
+
+  body.innerHTML = `
+    <!-- Info Card -->
+    <div class="ld-card">
+      <h4>Info Lead</h4>
+      <div class="ld-info-row"><span class="ld-info-label">Status</span><span class="ld-info-value">${(lead.status||'new').replace(/_/g,' ')}</span></div>
+      <div class="ld-info-row"><span class="ld-info-label">Bucket</span><span class="ld-info-value">${lead.bucket||'inbox'}</span></div>
+      ${lead.phone ? '<div class="ld-info-row"><span class="ld-info-label">Telepon</span><span class="ld-info-value">' + lead.phone + '</span></div>' : ''}
+      ${lead.email ? '<div class="ld-info-row"><span class="ld-info-label">Email</span><span class="ld-info-value">' + lead.email + '</span></div>' : ''}
+      ${lead.source ? '<div class="ld-info-row"><span class="ld-info-label">Source</span><span class="ld-info-value">' + lead.source + '</span></div>' : ''}
+      ${lead.preferred_area ? '<div class="ld-info-row"><span class="ld-info-label">Area</span><span class="ld-info-value">' + lead.preferred_area + '</span></div>' : ''}
+      ${lead.preferred_type ? '<div class="ld-info-row"><span class="ld-info-label">Tipe</span><span class="ld-info-value">' + lead.preferred_type + '</span></div>' : ''}
+      ${lead.budget_min || lead.budget_max ? '<div class="ld-info-row"><span class="ld-info-label">Budget</span><span class="ld-info-value">' + formatPrice(lead.budget_min) + ' — ' + formatPrice(lead.budget_max) + '</span></div>' : ''}
+      ${lead.ai_score != null ? '<div class="ld-info-row"><span class="ld-info-label">AI Score</span><span class="ld-info-value"><span class="ai-score-badge ' + tierClass + '">' + lead.ai_score + ' ' + tierClass + '</span></span></div>' : ''}
+      ${lead.next_follow_up_at ? '<div class="ld-info-row"><span class="ld-info-label">Follow Up</span><span class="ld-info-value">' + new Date(lead.next_follow_up_at).toLocaleDateString('id-ID') + '</span></div>' : ''}
+      ${lead.follow_up_reason ? '<div class="ld-info-row"><span class="ld-info-label">Alasan</span><span class="ld-info-value" style="font-size:0.75rem">' + lead.follow_up_reason + '</span></div>' : ''}
+      <div class="ld-info-row"><span class="ld-info-label">Dibuat</span><span class="ld-info-value">${lead.created_at ? timeAgo(lead.created_at) : '-'}</span></div>
+      <div class="ld-actions-row">
+        <button class="ld-btn-ai" onclick="doAISummary(${lead.id})">AI Summary</button>
+        <button class="ld-btn-recommend" onclick="doAIRecommend(${lead.id})">Rekomendasi</button>
+        ${lead.phone ? '<button class="ld-btn-chat" onclick="closeLeadDetail();openChatModal(' + lead.id + ',\\\'' + (lead.name||'').replace(/'/g,"\\\\'") + '\\\',\\\'' + (lead.phone||'') + '\\\')">Chat</button>' : ''}
+        ${lead.ai_score == null ? '<button class="ld-btn-score" onclick="doAIScoreFromDetail(' + lead.id + ')">Score</button>' : ''}
+      </div>
+    </div>
+
+    <!-- AI Summary Card -->
+    <div class="ld-card ai-summary-card" id="ld-ai-summary">
+      <h4>AI Summary</h4>
+      <div id="ai-summary-content">
+        ${lead.ai_summary ? '<div class="ai-summary-text">' + lead.ai_summary + '</div>' : '<div style="font-size:0.8rem;color:var(--gray-500);">Belum ada AI summary. Klik tombol "AI Summary" untuk generate.</div>'}
+      </div>
+    </div>
+
+    <!-- Notes Card -->
+    <div class="ld-card" id="ld-notes-card">
+      <h4>Catatan</h4>
+      <div id="ld-notes-list"><div style="font-size:0.8rem;color:var(--gray-500);">Memuat...</div></div>
+      <div class="note-input-row">
+        <input type="text" id="ld-note-input" placeholder="Tambah catatan..." onkeydown="if(event.key==='Enter')addLeadNote(${lead.id})">
+        <button onclick="addLeadNote(${lead.id})">Simpan</button>
+      </div>
+    </div>
+
+    <!-- Property Recommendations -->
+    <div class="ld-card" id="ld-recommendations">
+      <h4>Rekomendasi Properti</h4>
+      <div id="ld-rec-content"><div style="font-size:0.8rem;color:var(--gray-500);">Klik tombol "Rekomendasi" untuk mencocokkan properti.</div></div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="ld-card" id="ld-timeline">
+      <h4>Timeline</h4>
+      <div id="ld-timeline-content"><div style="font-size:0.8rem;color:var(--gray-500);">Memuat...</div></div>
+    </div>
+  `;
+
+  loadLeadNotes(lead.id);
+  loadLeadTimeline(lead.id);
+}
+
+async function loadLeadNotes(leadId) {
+  const container = document.getElementById('ld-notes-list');
+  const notes = await apiFetch('/leads/' + leadId + '/notes');
+  if (notes.error || !Array.isArray(notes) || notes.length === 0) {
+    container.innerHTML = '<div style="font-size:0.8rem;color:var(--gray-500);padding:4px 0;">Belum ada catatan</div>';
+    return;
+  }
+  container.innerHTML = notes.map(n => `
+    <div class="note-item">
+      <div class="note-content">${(n.content||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+      <div class="note-meta">
+        <span>${n.created_at ? new Date(n.created_at).toLocaleString('id-ID') : '-'} ${n.note_type !== 'manual' ? '(' + n.note_type + ')' : ''}</span>
+        <button class="note-delete" onclick="deleteLeadNote(${n.id},${leadId})">Hapus</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function addLeadNote(leadId) {
+  const input = document.getElementById('ld-note-input');
+  const content = input.value.trim();
+  if (!content) return;
+
+  const res = await apiFetch('/leads/' + leadId + '/notes', {
+    method: 'POST',
+    body: JSON.stringify({ content })
+  });
+  if (res.error) { showToast('Gagal: ' + res.error); return; }
+  input.value = '';
+  showToast('Catatan ditambahkan');
+  loadLeadNotes(leadId);
+  loadLeadTimeline(leadId);
+}
+
+async function deleteLeadNote(noteId, leadId) {
+  const res = await apiFetch('/leads/notes/' + noteId, { method: 'DELETE' });
+  if (res.error) { showToast('Gagal: ' + res.error); return; }
+  showToast('Catatan dihapus');
+  loadLeadNotes(leadId);
+  loadLeadTimeline(leadId);
+}
+
+async function doAISummary(leadId) {
+  const container = document.getElementById('ai-summary-content');
+  container.innerHTML = '<div style="font-size:0.8rem;color:var(--gray-500);">Generating AI summary...</div>';
+
+  const res = await apiFetch('/leads/' + leadId + '/ai-summary', { method: 'POST' });
+  if (res.error) {
+    container.innerHTML = '<div style="font-size:0.8rem;color:var(--red);">Gagal: ' + res.error + '</div>';
+    return;
+  }
+
+  const riskClass = res.risk_level === 'high' ? 'risk-high' : res.risk_level === 'low' ? 'risk-low' : 'risk-medium';
+  container.innerHTML = `
+    <div class="ai-summary-text">${res.summary || '-'}</div>
+    ${res.recommended_action ? '<div style="margin-top:8px;font-size:0.8rem;"><strong>Next:</strong> ' + res.recommended_action + '</div>' : ''}
+    ${res.risk_level ? '<div style="margin-top:6px;"><span class="ai-risk-badge ' + riskClass + '">Risk: ' + res.risk_level + '</span></div>' : ''}
+    ${res.follow_up_days ? '<div style="margin-top:4px;font-size:0.72rem;color:var(--gray-500);">Follow up dalam ' + res.follow_up_days + ' hari</div>' : ''}
+  `;
+  showToast('AI Summary berhasil');
+}
+
+async function doAIRecommend(leadId) {
+  const container = document.getElementById('ld-rec-content');
+  container.innerHTML = '<div style="font-size:0.8rem;color:var(--gray-500);">Mencari properti yang cocok...</div>';
+
+  const res = await apiFetch('/leads/' + leadId + '/ai-recommend', { method: 'POST' });
+  if (res.error) {
+    container.innerHTML = '<div style="font-size:0.8rem;color:var(--red);">Gagal: ' + res.error + '</div>';
+    return;
+  }
+
+  if (!res.recommendations || res.recommendations.length === 0) {
+    container.innerHTML = '<div style="font-size:0.8rem;color:var(--gray-500);">Tidak ada properti yang cocok ditemukan.</div>';
+    return;
+  }
+
+  container.innerHTML = res.recommendations.map(p => `
+    <div class="rec-card" onclick="openDetail('${p.slug || ''}')" style="cursor:pointer;">
+      <div class="rec-card-info">
+        <div class="rec-card-title">${p.title || 'Property'}</div>
+        <div class="rec-card-detail">${p.area_location || p.cluster || p.sektor || '-'} | ${formatPrice(p.price)}</div>
+        <div class="rec-card-detail">${p.property_type || '-'} | ${p.land_area || '-'}m² | ${p.bedrooms || '-'} KT</div>
+      </div>
+      ${p.is_hot ? '<span class="rec-hot">HOT</span>' : ''}
+    </div>
+  `).join('');
+  showToast(res.recommendations.length + ' properti ditemukan');
+}
+
+async function doAIScoreFromDetail(leadId) {
+  showToast('Scoring lead...');
+  const res = await apiFetch('/leads/' + leadId + '/ai-score', { method: 'POST' });
+  if (res && !res.error) {
+    showToast('Score: ' + res.score + ' (' + res.tier + ')');
+    openLeadDetail(leadId);
+    loadLeads();
+  } else {
+    showToast('Gagal scoring');
+  }
+}
+
+async function loadLeadTimeline(leadId) {
+  const container = document.getElementById('ld-timeline-content');
+  const data = await apiFetch('/leads/' + leadId + '/timeline');
+  if (data.error || !Array.isArray(data) || data.length === 0) {
+    container.innerHTML = '<div style="font-size:0.8rem;color:var(--gray-500);">Belum ada aktivitas</div>';
+    return;
+  }
+
+  container.innerHTML = data.slice(0, 20).map(item => {
+    let dotClass = 'activity';
+    let typeLabel = 'Activity';
+    let icon = '';
+    if (item.type === 'message') {
+      dotClass = item.direction === 'outbound' ? 'msg-out' : 'msg-in';
+      typeLabel = item.direction === 'outbound' ? 'WA Out' : 'WA In';
+    } else if (item.type === 'note') {
+      dotClass = 'note';
+      typeLabel = item.note_type === 'ai_generated' ? 'AI Note' : 'Note';
+    } else {
+      typeLabel = item.activity_type || 'Activity';
+    }
+    return `
+      <div class="timeline-item">
+        <div class="timeline-dot ${dotClass}"></div>
+        <div class="timeline-body">
+          <div class="timeline-type" style="color:${dotClass==='note'?'#8b5cf6':dotClass==='msg-in'?'#3b82f6':dotClass==='msg-out'?'#10b981':'#f59e0b'}">${typeLabel}</div>
+          <div class="timeline-text">${(item.content||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').substring(0, 200)}</div>
+          <div class="timeline-time">${item.created_at ? new Date(item.created_at).toLocaleString('id-ID') : '-'}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ===== PROFILE =====
+async function loadProfile() {
+  const container = document.getElementById('profile-content');
+
+  if (!isLoggedIn()) {
+    container.innerHTML = `
+      <div style="padding:20px;">
+        <div class="profile-header">
+          <div class="profile-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="profile-name">Belum Login</div>
+          <div class="profile-email">Silakan login untuk mengakses semua fitur</div>
+        </div>
+        <div class="login-form" style="margin-top:0">
+          <div id="profile-login-alert"></div>
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="profile-username" placeholder="Username">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="profile-password" placeholder="Password" onkeydown="if(event.key==='Enter')profileLogin()">
+          </div>
+          <button class="btn-primary" onclick="profileLogin()">🔐 Login</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = '<div class="skeleton" style="height:200px;margin-bottom:16px"></div>';
+
+  const data = await apiFetch('/users/me');
+  if (data.error) {
+    if (data.status === 401) { removeToken(); loadProfile(); return; }
+    container.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>${data.error}</p></div>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="profile-name">${data.full_name || data.username || '—'}</div>
+      <div class="profile-email">${data.email || ''}</div>
+    </div>
+
+    <div class="profile-menu">
+      <div class="profile-menu-item" onclick="switchPage('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+        <span>Dashboard</span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="profile-menu-item" onclick="switchPage('leads')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        <span>Manage Leads</span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="profile-menu-item" onclick="switchPage('search')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Search Properties</span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+
+    <div style="padding:20px;margin-top:20px;">
+      <button class="btn-primary btn-danger" onclick="doLogout()">🚪 Logout</button>
+    </div>
+
+    <div style="text-align:center;padding:20px;color:var(--gray-500);font-size:0.75rem;">
+      livininbintaro v2.0<br>
+      ${data.username ? 'Logged in as @' + data.username : ''}
+    </div>
+  `;
+}
+
+async function profileLogin() {
+  const username = document.getElementById('profile-username').value.trim();
+  const password = document.getElementById('profile-password').value;
+  const alertEl = document.getElementById('profile-login-alert');
+
+  if (!username || !password) {
+    alertEl.innerHTML = '<div class="alert alert-error">Username dan password harus diisi</div>';
+    return;
+  }
+
+  const data = await apiFetch('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ username, password })
+  });
+
+  if (data.error) {
+    alertEl.innerHTML = `<div class="alert alert-error">${data.error}</div>`;
+    return;
+  }
+
+  if (data.access_token || data.token) {
+    setToken(data.access_token || data.token);
+    showToast('✅ Login berhasil!');
+    loadProfile();
+    loadHomeStats();
+  }
+}
+
+function doLogout() {
+  removeToken();
+  showToast('👋 Logout berhasil');
+  loadProfile();
+  loadHomeStats();
+}
+
+// ===== URL HANDLING (deep link to listing) =====
+function handleUrl() {
+  // Check for direct URL path like /listing/slug
+  const path = window.location.pathname;
+  const listingMatch = path.match(/\/listing\/([^\/]+)/);
+  if (listingMatch && listingMatch[1]) {
+    openDetail(listingMatch[1]);
+    return;
+  }
+  
+  // Parse query parameters
+  const params = new URLSearchParams(window.location.search);
+  
+  // Check for ?listing=slug parameter
+  const listing = params.get('listing');
+  if (listing) {
+    openDetail(listing);
+    return;
+  }
+  
+  // NEW: Check for ?search=CPA_CODE or search term (from WhatsApp notifications)
+  const search = params.get('search');
+  if (search) {
+    handleDeepLinkSearch(search);
+  }
+}
+
+// NEW: Handle deep link search (e.g., from WhatsApp notifications: ?search=CPA%2016279)
+async function handleDeepLinkSearch(searchTerm) {
+  try {
+    // Search for listing by CPA code, cluster, address, or title
+    const url = `/api/listings/?search=${encodeURIComponent(searchTerm)}&limit=5`;
+    const results = await apiFetch(url);
+    
+    if (results.error) {
+      showToast(`⚠️ Tidak dapat mencari properti "${searchTerm}"`);
+      return;
+    }
+    
+    if (!Array.isArray(results) || results.length === 0) {
+      // No exact match found
+      showToast(`❌ Properti "${searchTerm}" tidak ditemukan`);
+      return;
+    }
+    
+    // If exactly one match, open the detail
+    if (results.length === 1) {
+      openDetail(results[0].slug);
+      return;
+    }
+    
+    // If multiple matches, show search results
+    switchPage('search');
+    document.getElementById('search-input').value = searchTerm;
+    const container = document.getElementById('search-results');
+    container.innerHTML = 
+      `<p style="font-size:0.85rem;color:var(--gray-500);margin-bottom:12px;">${results.length} hasil ditemukan untuk "${searchTerm}"</p>` +
+      results.map(l => buildPropertyCard(l)).join('');
+  } catch(e) {
+    console.error('Deep link search error:', e);
+    showToast(`⚠️ Error mencari properti`);
+  }
+}
+
+// ===== PULL TO REFRESH =====
+(function() {
+  let startY = 0;
+  let pulling = false;
+  const page = document.getElementById('page-home');
+  const ptr = document.getElementById('ptr-indicator');
+  document.addEventListener('touchstart', function(e) {
+    if (!page.classList.contains('active')) return;
+    if (window.scrollY === 0) { startY = e.touches[0].clientY; pulling = true; }
+  }, { passive: true });
+  document.addEventListener('touchmove', function(e) {
+    if (!pulling) return;
+    const diff = e.touches[0].clientY - startY;
+    if (diff > 60 && window.scrollY === 0) { ptr.classList.add('visible'); }
+  }, { passive: true });
+  document.addEventListener('touchend', function() {
+    if (ptr.classList.contains('visible')) {
+      loadHotListings();
+      loadLatestListings();
+      loadHomeStats();
+      setTimeout(() => ptr.classList.remove('visible'), 1000);
+    }
+    pulling = false;
+  }, { passive: true });
+})();
+
+// ===== INIT =====
+async function init() {
+  initFilters();
+  loadHomeStats();
+  loadHotListings();
+  loadLatestListings();
+  handleUrl();
+}
+
+// Handle back button for detail overlay
+window.addEventListener('popstate', () => {
+  if (document.getElementById('detail-overlay').classList.contains('active')) {
+    closeDetail();
+  }
+});
+
+// Close modals on backdrop click
+document.querySelectorAll('.modal-backdrop').forEach(m => {
+  m.addEventListener('click', (e) => {
+    if (e.target === m) m.classList.remove('active');
+  });
+});
+
+// Close move menus on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.quick-move-menu') && !e.target.closest('[onclick*="toggleMoveMenu"]')) {
+    document.querySelectorAll('.quick-move-menu.show').forEach(m => m.classList.remove('show'));
+  }
+});
+
+// Event delegation for listing card clicks
+document.addEventListener('click', function(e) {
+  const card = e.target.closest('.property-card[data-slug], .featured-card[data-slug]');
+  if (card && !e.target.closest('.card-actions button')) {
+    const slug = card.getAttribute('data-slug');
+    if (slug) openDetail(slug);
+  }
+});
+
+// Keyboard support for cards
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' || e.key === ' ') {
+    const card = e.target.closest('.property-card[data-slug], .featured-card[data-slug]');
+    if (card) {
+      e.preventDefault();
+      const slug = card.getAttribute('data-slug');
+      if (slug) openDetail(slug);
+    }
+  }
+});
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/livininbintaro/sw.js').catch(() => {});
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>

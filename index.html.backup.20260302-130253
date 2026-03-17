@@ -255,7 +255,7 @@
   .lead-actions { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
 
   /* Bucket Tabs */
-  .bucket-tabs { display:flex; gap:8px; padding:12px 16px 12px 16px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; background:var(--gray-50); border-bottom:1px solid var(--gray-200); scroll-padding-left:16px; }
+  .bucket-tabs { display:flex; gap:8px; padding:12px 20px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; background:var(--gray-50); border-bottom:1px solid var(--gray-200); }
   .bucket-tabs::-webkit-scrollbar { display:none; }
   .bucket-tab { display:flex; align-items:center; gap:6px; padding:8px 16px; border-radius:20px; font-size:0.85rem; font-weight:500; white-space:nowrap; cursor:pointer; background:var(--white); border:1px solid var(--gray-200); transition:all 0.2s; }
   .bucket-tab.active { background:var(--primary); color:var(--white); border-color:var(--primary); }

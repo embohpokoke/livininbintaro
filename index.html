@@ -1051,7 +1051,12 @@ async function apiFetch(path, opts = {}) {
     const data = await res.json().catch(() => ({}));
     return { error: data.detail || `Error ${res.status}`, status: res.status };
   }
-  return res.json();
+  const json = await res.json();
+  // Normalize paginated response {data:[], total:N} → plain array
+  if (json && typeof json === 'object' && Array.isArray(json.data) && 'total' in json) {
+    return json.data;
+  }
+  return json;
 }
 
 // ===== TOAST =====

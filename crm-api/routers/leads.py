@@ -67,11 +67,49 @@ async def list_leads(
             LIMIT ? OFFSET ?
         """, params + [limit, skip]).fetchall()
 
+        lead_ids = [r["id"] for r in rows]
+        msg_counts = {}
+        if lead_ids:
+            placeholders = ",".join(["?"] * len(lead_ids))
+            try:
+                mc_cursor = conn.execute(f"""
+                    SELECT lead_id,
+                           COUNT(*) AS msg_total,
+                           SUM(CASE WHEN direction = 'inbound' THEN 1 ELSE 0 END) AS msg_inbound,
+                           SUM(CASE WHEN direction = 'outbound' THEN 1 ELSE 0 END) AS msg_outbound,
+                           MAX(created_at) AS last_message_at
+                    FROM wa_messages
+                    WHERE lead_id IN ({placeholders})
+                    GROUP BY lead_id
+                """, lead_ids)
+                mc_rows = mc_cursor.fetchall()
+                pass  # query succeeded
+            except Exception as e:
+                import logging; logging.getLogger("leads").error(f"Message counts query failed: {e}")
+                mc_rows = []
+            for mc in mc_rows:
+                msg_counts[mc["lead_id"]] = {
+                    "msg_total": mc["msg_total"] or 0,
+                    "msg_inbound": mc["msg_inbound"] or 0,
+                    "msg_outbound": mc["msg_outbound"] or 0,
+                    "last_message_at": str(mc["last_message_at"]) if mc["last_message_at"] else None,
+                }
+
+        data = []
+        for r in rows:
+            d = dict(r)
+            mc = msg_counts.get(d["id"], {})
+            d["msg_total"] = mc.get("msg_total", 0)
+            d["msg_inbound"] = mc.get("msg_inbound", 0)
+            d["msg_outbound"] = mc.get("msg_outbound", 0)
+            d["last_message_at"] = mc.get("last_message_at")
+            data.append(d)
+
         return {
             "total": total,
             "skip": skip,
             "limit": limit,
-            "data": [dict(r) for r in rows],
+            "data": data,
         }
     finally:
         conn.close()

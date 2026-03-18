@@ -432,6 +432,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sa
 .chat-bubble { max-width:80%; padding:10px 14px; border-radius:14px; font-size:0.85rem; line-height:1.4; position:relative; }
 .chat-bubble.inbound { background:var(--gray-100); align-self:flex-start; border-bottom-left-radius:4px; }
 .chat-bubble.outbound { background:var(--accent-light); align-self:flex-end; border-bottom-right-radius:4px; }
+.chat-bubble .chat-sender { font-size:0.68rem; font-weight:600; margin-bottom:2px; }
+.chat-bubble.inbound .chat-sender { color:var(--primary); }
+.chat-bubble.outbound .chat-sender { color:var(--accent); }
 .chat-bubble .chat-time { font-size:0.65rem; color:var(--gray-500); margin-top:4px; }
 .chat-input-bar { display:flex; gap:8px; margin-top:12px; }
 .chat-input-bar input { flex:1; }
@@ -873,6 +876,18 @@ function timeAgo(dt) {
   if (diff < 604800) return Math.floor(diff / 86400) + 'd lalu';
   return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
 }
+function formatTime(dt) {
+  if (!dt) return '';
+  const s = String(dt);
+  const d = new Date(s + (s.includes('Z') || s.includes('+') ? '' : 'Z'));
+  const now = new Date();
+  const diffDays = Math.floor((now - d) / 86400000);
+  const time = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  if (diffDays === 0) return time;
+  if (diffDays === 1) return 'Kemarin ' + time;
+  if (diffDays < 7) return d.toLocaleDateString('id-ID', { weekday: 'short' }) + ' ' + time;
+  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ' ' + time;
+}
 function scoreTier(s) {
   if (s >= 80) return 'hot';
   if (s >= 60) return 'warm';
@@ -1143,11 +1158,18 @@ function buildKanbanCard(lead) {
     if (slaDate < new Date()) slaHtml = '<span class="kc-tag sla-warn">SLA!</span>';
   }
 
+  let msgHtml = '';
+  if (lead.msg_total > 0) {
+    msgHtml = `<span class="kc-tag" style="background:#DBEAFE;color:var(--blue);font-size:0.65rem">💬 ${lead.msg_inbound || 0}↓ ${lead.msg_outbound || 0}↑</span>`;
+  }
+
+  const lastTime = lead.last_contacted_at || lead.last_message_at || lead.created_at;
+
   return `<div class="kanban-card" draggable="true" data-lead-id="${lead.id}" onclick="openLeadDetail(${lead.id})">
     <div class="kc-name">${lead.name}</div>
     <div class="kc-phone">${lead.phone || '—'}</div>
-    <div class="kc-meta">${sourceHtml}${scoreHtml}${slaHtml}</div>
-    <div class="kc-time">${timeAgo(lead.created_at)}</div>
+    <div class="kc-meta">${sourceHtml}${scoreHtml}${slaHtml}${msgHtml}</div>
+    <div class="kc-time">${timeAgo(lastTime)}</div>
   </div>`;
 }
 
@@ -1225,7 +1247,7 @@ async function loadLeadsList() {
 
   wrap.innerHTML = `<table class="leads-table">
     <thead><tr>
-      <th>Name</th><th>Phone</th><th>Source</th><th>Bucket</th><th>Score</th><th>Created</th>
+      <th>Name</th><th>Phone</th><th>Source</th><th>Bucket</th><th>Score</th><th>Chat</th><th>Last Active</th>
     </tr></thead>
     <tbody>${data.data.map(l => `<tr onclick="openLeadDetail(${l.id})">
       <td class="lead-name-cell">${l.name}</td>
@@ -1233,7 +1255,8 @@ async function loadLeadsList() {
       <td>${l.source || '—'}</td>
       <td><span class="status-badge bucket-${l.bucket}">${l.bucket}</span></td>
       <td>${l.ai_score != null ? `<span class="score-badge"><span class="score-dot" style="background:${scoreColor(l.ai_score)}"></span>${l.ai_score}</span>` : '—'}</td>
-      <td>${timeAgo(l.created_at)}</td>
+      <td style="font-size:0.78rem;white-space:nowrap">${l.msg_total > 0 ? l.msg_inbound + '↓ ' + l.msg_outbound + '↑' : '—'}</td>
+      <td>${timeAgo(l.last_contacted_at || l.last_message_at || l.created_at)}</td>
     </tr>`).join('')}</tbody>
   </table>`;
 
@@ -1307,8 +1330,9 @@ async function openLeadDetail(id) {
       <div class="chat-messages">
         ${lead.recent_messages.slice().reverse().map(m => `
           <div class="chat-bubble ${m.direction || 'inbound'}">
+            <div class="chat-sender">${m.direction === 'outbound' ? 'Ocha (Agent)' : (m.sender_name || lead.name || 'Client')}</div>
             ${m.message || ''}
-            <div class="chat-time">${timeAgo(m.created_at)}</div>
+            <div class="chat-time">${formatTime(m.created_at)}</div>
           </div>
         `).join('')}
       </div>

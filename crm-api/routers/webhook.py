@@ -76,12 +76,28 @@ async def wa_incoming(request: Request, background_tasks: BackgroundTasks):
 
             if lead:
                 lead_id = lead["id"]
-                # Update last activity
                 now = datetime.utcnow().isoformat()
-                conn.execute(
-                    "UPDATE leads SET last_contacted_at = ?, updated_at = ? WHERE id = ?",
-                    (now, now, lead_id),
-                )
+                if is_from_me:
+                    # Agent responded — update status to "contacted" if still "new",
+                    # clear SLA deadline (agent has responded)
+                    if lead["status"] == "new":
+                        conn.execute(
+                            """UPDATE leads SET last_contacted_at = ?, updated_at = ?,
+                               status = 'contacted', sla_deadline = NULL WHERE id = ?""",
+                            (now, now, lead_id),
+                        )
+                    else:
+                        conn.execute(
+                            """UPDATE leads SET last_contacted_at = ?, updated_at = ?,
+                               sla_deadline = NULL WHERE id = ?""",
+                            (now, now, lead_id),
+                        )
+                else:
+                    # Customer message — update last activity
+                    conn.execute(
+                        "UPDATE leads SET last_contacted_at = ?, updated_at = ? WHERE id = ?",
+                        (now, now, lead_id),
+                    )
             elif not is_from_me:
                 # Auto-create lead for new inbound sender
                 now = datetime.utcnow().isoformat()

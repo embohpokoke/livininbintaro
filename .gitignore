@@ -3,14 +3,55 @@
 .AppleDouble
 .LSOverride
 
+# Environment & secrets
+.env
+.env.*
+.google_token.json
+*.json.token
+token.json
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+*.sql
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
 # Backups
+*.bak*
+*.old
 *.backup
 *.backup-*
 *.broken-*
+*.sh.bak
 
 # Logs
 *.log
+
+# Virtual env
+venv/
+.venv/
+env/
+
+# Node.js
+node_modules/
+
+# Frontend build
+api/frontend/dist/
+
+# Images (large, synced separately)
 images/
-*.jpg
-*.png
-*.webp
+
+# Memory & cache
+memory/
+
+# Claude settings
+.claude/
+
+# Archive directories
+crm-api/archive/

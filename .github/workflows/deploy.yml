@@ -20,4 +20,6 @@ jobs:
             cd /var/www/livininbintaro
             git fetch origin
             git reset --hard origin/master
+            systemctl daemon-reload
+            systemctl restart livininbintaro livininbintaro-crm
             echo "Deploy done: $(date)"

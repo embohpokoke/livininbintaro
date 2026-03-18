@@ -1059,6 +1059,28 @@ async function apiFetch(path, opts = {}) {
   return json;
 }
 
+// ===== CRM FETCH (proxied via /crm to port 8003) =====
+async function crmFetch(path, opts = {}) {
+  const url = window.location.origin + '/crm' + path;
+  const defaults = { headers: authHeaders() };
+  const config = { ...defaults, ...opts, headers: { ...defaults.headers, ...(opts.headers || {}) } };
+  const res = await fetch(url, config);
+  if (res.status === 401) {
+    removeToken();
+    return { error: 'Sesi habis, silakan login ulang', status: 401 };
+  }
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    return { error: data.detail || , status: res.status };
+  }
+  const json = await res.json();
+  // Normalize paginated {total, data:[]} → plain array for leads view
+  if (json && typeof json === 'object' && Array.isArray(json.data) && 'total' in json) {
+    return json.data;
+  }
+  return json;
+}
+
 // ===== TOAST =====
 function showToast(msg, duration = 2500) {
   const t = document.getElementById('toast');
@@ -1741,7 +1763,7 @@ let currentBucket = 'inbox';
 
 async function loadBucketCounts() {
   try {
-    const res = await apiFetch('/leads/counts');
+    const res = await crmFetch('/leads/counts');
     if (res && !res.error) {
       ['inbox', 'active', 'follow_up', 'non_lead', 'closed'].forEach(b => {
         const el = document.getElementById('count-' + b);
@@ -1772,7 +1794,7 @@ function toggleMoveMenu(leadId) {
 
 async function moveToBucket(leadId, bucket) {
   try {
-    await apiFetch('/leads/' + leadId + '/bucket', { method: 'PUT', body: JSON.stringify({ bucket }) });
+    await crmFetch('/leads/' + leadId + '/bucket', { method: 'PUT', body: JSON.stringify({ bucket }) });
     document.querySelectorAll('.quick-move-menu.show').forEach(m => m.classList.remove('show'));
     showToast('✅ Lead dipindahkan ke ' + bucketLabel(bucket));
     loadLeads();
@@ -1783,7 +1805,7 @@ async function moveToBucket(leadId, bucket) {
 async function triggerAiScore(leadId) {
   showToast('⏳ Scoring lead...');
   try {
-    const res = await apiFetch('/leads/' + leadId + '/ai-score', { method: 'POST' });
+    const res = await crmFetch('/leads/' + leadId + '/ai-score', { method: 'POST' });
     if (res && !res.error) {
       showToast('✅ Score: ' + res.score + ' (' + res.tier + ')');
       loadLeads();
@@ -1820,7 +1842,7 @@ async function loadLeads() {
   document.getElementById('bucketTabs').style.display = 'flex';
   container.innerHTML = '<div class="skeleton" style="height:100px;margin-bottom:12px"></div><div class="skeleton" style="height:100px;margin-bottom:12px"></div>';
 
-  const data = await apiFetch('/leads/?bucket=' + currentBucket);
+  const data = await crmFetch('/leads/?bucket=' + currentBucket);
   if (data.error) {
     if (data.status === 401) { removeToken(); loadLeads(); return; }
     container.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>' + data.error + '</p></div>';
@@ -1954,7 +1976,7 @@ async function submitLead() {
   if (propertyType) body.preferred_type = propertyType;
   if (area) body.preferred_area = area;
 
-  const data = await apiFetch('/leads/', {
+  const data = await crmFetch('/leads/', {
     method: 'POST',
     body: JSON.stringify(body)
   });
@@ -1979,7 +2001,7 @@ async function submitStatusUpdate() {
   const leadId = document.getElementById('update-status-lead-id').value;
   const status = document.getElementById('update-status-select').value;
 
-  const data = await apiFetch('/leads/' + leadId, {
+  const data = await crmFetch('/leads/' + leadId, {
     method: 'PUT',
     body: JSON.stringify({ status })
   });
@@ -2012,7 +2034,7 @@ async function submitActivity() {
     return;
   }
 
-  const data = await apiFetch('/leads/' + leadId + '/activities', {
+  const data = await crmFetch('/leads/' + leadId + '/activities', {
     method: 'POST',
     body: JSON.stringify({ activity_type: type, notes })
   });
@@ -2128,7 +2150,7 @@ async function openLeadDetail(leadId) {
   overlay.classList.add('active');
   body.innerHTML = '<div class="skeleton" style="height:100px;margin:12px 0"></div><div class="skeleton" style="height:80px;margin:12px 0"></div>';
 
-  const lead = await apiFetch('/leads/' + leadId);
+  const lead = await crmFetch('/leads/' + leadId);
   if (lead.error) {
     body.innerHTML = '<div class="empty-state"><p>' + lead.error + '</p></div>';
     return;
@@ -2208,7 +2230,7 @@ function renderLeadDetail(lead) {
 
 async function loadLeadNotes(leadId) {
   const container = document.getElementById('ld-notes-list');
-  const notes = await apiFetch('/leads/' + leadId + '/notes');
+  const notes = await crmFetch('/leads/' + leadId + '/notes');
   if (notes.error || !Array.isArray(notes) || notes.length === 0) {
     container.innerHTML = '<div style="font-size:0.8rem;color:var(--gray-500);padding:4px 0;">Belum ada catatan</div>';
     return;
@@ -2229,7 +2251,7 @@ async function addLeadNote(leadId) {
   const content = input.value.trim();
   if (!content) return;
 
-  const res = await apiFetch('/leads/' + leadId + '/notes', {
+  const res = await crmFetch('/leads/' + leadId + '/notes', {
     method: 'POST',
     body: JSON.stringify({ content })
   });
@@ -2241,7 +2263,7 @@ async function addLeadNote(leadId) {
 }
 
 async function deleteLeadNote(noteId, leadId) {
-  const res = await apiFetch('/leads/notes/' + noteId, { method: 'DELETE' });
+  const res = await crmFetch('/leads/notes/' + noteId, { method: 'DELETE' });
   if (res.error) { showToast('Gagal: ' + res.error); return; }
   showToast('Catatan dihapus');
   loadLeadNotes(leadId);
@@ -2252,7 +2274,7 @@ async function doAISummary(leadId) {
   const container = document.getElementById('ai-summary-content');
   container.innerHTML = '<div style="font-size:0.8rem;color:var(--gray-500);">Generating AI summary...</div>';
 
-  const res = await apiFetch('/leads/' + leadId + '/ai-summary', { method: 'POST' });
+  const res = await crmFetch('/leads/' + leadId + '/ai-summary', { method: 'POST' });
   if (res.error) {
     container.innerHTML = '<div style="font-size:0.8rem;color:var(--red);">Gagal: ' + res.error + '</div>';
     return;
@@ -2272,7 +2294,7 @@ async function doAIRecommend(leadId) {
   const container = document.getElementById('ld-rec-content');
   container.innerHTML = '<div style="font-size:0.8rem;color:var(--gray-500);">Mencari properti yang cocok...</div>';
 
-  const res = await apiFetch('/leads/' + leadId + '/ai-recommend', { method: 'POST' });
+  const res = await crmFetch('/leads/' + leadId + '/ai-recommend', { method: 'POST' });
   if (res.error) {
     container.innerHTML = '<div style="font-size:0.8rem;color:var(--red);">Gagal: ' + res.error + '</div>';
     return;
@@ -2298,7 +2320,7 @@ async function doAIRecommend(leadId) {
 
 async function doAIScoreFromDetail(leadId) {
   showToast('Scoring lead...');
-  const res = await apiFetch('/leads/' + leadId + '/ai-score', { method: 'POST' });
+  const res = await crmFetch('/leads/' + leadId + '/ai-score', { method: 'POST' });
   if (res && !res.error) {
     showToast('Score: ' + res.score + ' (' + res.tier + ')');
     openLeadDetail(leadId);
@@ -2310,7 +2332,7 @@ async function doAIScoreFromDetail(leadId) {
 
 async function loadLeadTimeline(leadId) {
   const container = document.getElementById('ld-timeline-content');
-  const data = await apiFetch('/leads/' + leadId + '/timeline');
+  const data = await crmFetch('/leads/' + leadId + '/timeline');
   if (data.error || !Array.isArray(data) || data.length === 0) {
     container.innerHTML = '<div style="font-size:0.8rem;color:var(--gray-500);">Belum ada aktivitas</div>';
     return;

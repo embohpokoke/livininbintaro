@@ -83,6 +83,18 @@ def _build_query(
     return query
 
 
+@router.get("/hot")
+def get_hot_listings(db: Session = Depends(get_db)):
+    listings = (
+        db.query(Listing)
+        .filter(Listing.is_active.is_(True), Listing.is_hot.is_(True))
+        .order_by(Listing.hot_date.desc())
+        .limit(20)
+        .all()
+    )
+    return [listing_to_dict(l, include_internal=False) for l in listings]
+
+
 @router.get("/")
 def get_listings(
     page: int = Query(1, ge=1),

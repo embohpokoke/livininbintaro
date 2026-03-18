@@ -94,6 +94,18 @@ def get_public_listings(
     return paginate([listing_to_dict(listing) for listing in listings], total, page, limit)
 
 
+@router.get("/listings/hot")
+def get_hot_listings(db: Session = Depends(get_db)):
+    listings = (
+        db.query(Listing)
+        .filter(Listing.is_active.is_(True), Listing.is_hot.is_(True))
+        .order_by(Listing.hot_date.desc())
+        .limit(20)
+        .all()
+    )
+    return [listing_to_dict(listing) for listing in listings]
+
+
 @router.get("/listings/search")
 def search_public_listings(
     q: str = Query(..., min_length=1),

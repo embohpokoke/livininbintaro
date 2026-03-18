@@ -767,6 +767,30 @@
   </div>
 </div>
 
+<!-- ========== LOGIN PAGE ========== -->
+<div class="page" id="page-login">
+  <div class="status-bar"></div>
+  <div style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 120px);padding:20px;">
+    <div class="login-form" style="width:100%;max-width:400px;">
+      <div style="text-align:center;margin-bottom:8px;">
+        <div style="font-size:1.5rem;font-weight:800;color:var(--primary);">Livinin<span style="color:var(--accent)">Bintaro</span></div>
+      </div>
+      <h2>Login</h2>
+      <p>Silakan login untuk mengakses fitur ini</p>
+      <div id="main-login-alert"></div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="main-login-username" placeholder="Username">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="main-login-password" placeholder="Password" onkeydown="if(event.key==='Enter')handleMainLogin()">
+      </div>
+      <button class="btn-primary" id="main-login-btn" onclick="handleMainLogin()">Login</button>
+    </div>
+  </div>
+</div>
+
 <!-- ========== PROPERTY DETAIL OVERLAY ========== -->
 <div class="detail-overlay" id="detail-overlay">
   <div class="detail-header">
@@ -1005,7 +1029,7 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
     <span>Search</span>
   </div>
-  <div class="nav-item" onclick="switchPage('dashboard')" style="position:relative;" tabindex="0">
+  <div class="nav-item" onclick="window.open('https://dashboard.livininbintaro.my.id?token='+encodeURIComponent(getToken()||''),'_blank')" style="position:relative;" tabindex="0">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
     <span>Dashboard</span>
   </div>
@@ -1071,7 +1095,7 @@ async function crmFetch(path, opts = {}) {
   }
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
-    return { error: data.detail || , status: res.status };
+    return { error: data.detail || 'Error', status: res.status };
   }
   const json = await res.json();
   // Normalize paginated {total, data:[]} → plain array for leads view
@@ -1095,21 +1119,75 @@ function openModal(id) { document.getElementById(id).classList.add('active'); }
 
 // ===== PAGE NAVIGATION =====
 const pageNames = ['home', 'search', 'dashboard', 'leads', 'profile'];
+let loginReturnPage = null;
+
 function switchPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const idx = pageNames.indexOf(page);
   const target = document.getElementById('page-' + page);
+  if (!target) return;
   target.style.opacity = '0';
   target.classList.add('active');
   requestAnimationFrame(() => { target.style.opacity = '1'; });
-  document.querySelectorAll('.nav-item')[idx >= 0 ? idx : 0].classList.add('active');
+  if (idx >= 0) document.querySelectorAll('.nav-item')[idx].classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   // Load page data
   if (page === 'dashboard') loadDashboard();
   if (page === 'leads') { loadBucketCounts(); loadLeads(); }
   if (page === 'profile') loadProfile();
+}
+
+function showLoginPage(returnTo) {
+  loginReturnPage = returnTo || 'home';
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const target = document.getElementById('page-login');
+  target.style.opacity = '0';
+  target.classList.add('active');
+  requestAnimationFrame(() => { target.style.opacity = '1'; });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Clear previous alert
+  document.getElementById('main-login-alert').innerHTML = '';
+}
+
+async function handleMainLogin() {
+  const username = document.getElementById('main-login-username').value.trim();
+  const password = document.getElementById('main-login-password').value;
+  const alertEl = document.getElementById('main-login-alert');
+  const btn = document.getElementById('main-login-btn');
+
+  if (!username || !password) {
+    alertEl.innerHTML = '<div class="alert alert-error">Username dan password harus diisi</div>';
+    return;
+  }
+
+  alertEl.innerHTML = '';
+  btn.disabled = true;
+  btn.textContent = 'Logging in...';
+
+  const data = await apiFetch('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ username, password })
+  });
+
+  btn.disabled = false;
+  btn.textContent = 'Login';
+
+  if (data.error) {
+    alertEl.innerHTML = `<div class="alert alert-error">${data.error}</div>`;
+    return;
+  }
+
+  if (data.access_token || data.token) {
+    setToken(data.access_token || data.token);
+    showToast('Login berhasil!');
+    loadHomeStats();
+    switchPage(loginReturnPage || 'home');
+  } else {
+    alertEl.innerHTML = '<div class="alert alert-error">Login gagal, coba lagi</div>';
+  }
 }
 
 // ===== FORMAT HELPERS =====
@@ -1608,21 +1686,7 @@ async function loadDashboard() {
   const container = document.getElementById('dashboard-content');
 
   if (!isLoggedIn()) {
-    container.innerHTML = `
-      <div class="login-form">
-        <h2>🔐 Login Required</h2>
-        <p>Silakan login untuk mengakses dashboard</p>
-        <div id="dash-login-alert"></div>
-        <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="dash-username" placeholder="Username">
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="dash-password" placeholder="Password" onkeydown="if(event.key==='Enter')dashLogin()">
-        </div>
-        <button class="btn-primary" onclick="dashLogin()">Login</button>
-      </div>`;
+    showLoginPage('dashboard');
     return;
   }
 
@@ -1727,37 +1791,6 @@ async function loadDashboard() {
   `;
 }
 
-async function dashLogin() {
-  const username = document.getElementById('dash-username').value.trim();
-  const password = document.getElementById('dash-password').value;
-  const alertEl = document.getElementById('dash-login-alert');
-
-  if (!username || !password) {
-    alertEl.innerHTML = '<div class="alert alert-error">Username dan password harus diisi</div>';
-    return;
-  }
-
-  alertEl.innerHTML = '';
-  const data = await apiFetch('/auth/login', {
-    method: 'POST',
-    body: JSON.stringify({ username, password })
-  });
-
-  if (data.error) {
-    alertEl.innerHTML = `<div class="alert alert-error">${data.error}</div>`;
-    return;
-  }
-
-  if (data.access_token || data.token) {
-    setToken(data.access_token || data.token);
-    showToast('✅ Login berhasil!');
-    loadDashboard();
-    loadHomeStats();
-  } else {
-    alertEl.innerHTML = '<div class="alert alert-error">Login gagal, coba lagi</div>';
-  }
-}
-
 // ===== LEADS =====
 let currentBucket = 'inbox';
 
@@ -1820,22 +1853,7 @@ async function loadLeads() {
   const container = document.getElementById('leads-content');
 
   if (!isLoggedIn()) {
-    document.getElementById('bucketTabs').style.display = 'none';
-    container.innerHTML = `
-      <div class="login-form">
-        <h2>🔐 Login Required</h2>
-        <p>Silakan login untuk mengakses leads</p>
-        <div id="leads-login-alert"></div>
-        <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="leads-username" placeholder="Username">
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="leads-password" placeholder="Password" onkeydown="if(event.key==='Enter')leadsLogin()">
-        </div>
-        <button class="btn-primary" onclick="leadsLogin()">Login</button>
-      </div>`;
+    showLoginPage('leads');
     return;
   }
 
@@ -1901,32 +1919,6 @@ function buildLeadCard(lead) {
   </div>`;
 }
 
-async function leadsLogin() {
-  const username = document.getElementById('leads-username').value.trim();
-  const password = document.getElementById('leads-password').value;
-  const alertEl = document.getElementById('leads-login-alert');
-
-  if (!username || !password) {
-    alertEl.innerHTML = '<div class="alert alert-error">Username dan password harus diisi</div>';
-    return;
-  }
-
-  const data = await apiFetch('/auth/login', {
-    method: 'POST',
-    body: JSON.stringify({ username, password })
-  });
-
-  if (data.error) {
-    alertEl.innerHTML = `<div class="alert alert-error">${data.error}</div>`;
-    return;
-  }
-
-  if (data.access_token || data.token) {
-    setToken(data.access_token || data.token);
-    showToast('✅ Login berhasil!');
-    loadLeads();
-  }
-}
 
 function showAddLeadModal() {
   if (!isLoggedIn()) { showToast('Login dulu ya'); return; }
@@ -2368,28 +2360,7 @@ async function loadProfile() {
   const container = document.getElementById('profile-content');
 
   if (!isLoggedIn()) {
-    container.innerHTML = `
-      <div style="padding:20px;">
-        <div class="profile-header">
-          <div class="profile-avatar">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </div>
-          <div class="profile-name">Belum Login</div>
-          <div class="profile-email">Silakan login untuk mengakses semua fitur</div>
-        </div>
-        <div class="login-form" style="margin-top:0">
-          <div id="profile-login-alert"></div>
-          <div class="form-group">
-            <label>Username</label>
-            <input type="text" id="profile-username" placeholder="Username">
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="profile-password" placeholder="Password" onkeydown="if(event.key==='Enter')profileLogin()">
-          </div>
-          <button class="btn-primary" onclick="profileLogin()">🔐 Login</button>
-        </div>
-      </div>`;
+    showLoginPage('profile');
     return;
   }
 
@@ -2412,7 +2383,7 @@ async function loadProfile() {
     </div>
 
     <div class="profile-menu">
-      <div class="profile-menu-item" onclick="switchPage('dashboard')">
+      <div class="profile-menu-item" onclick="window.open('https://dashboard.livininbintaro.my.id?token='+encodeURIComponent(getToken()||''),'_blank')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
         <span>Dashboard</span>
         <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -2440,33 +2411,6 @@ async function loadProfile() {
   `;
 }
 
-async function profileLogin() {
-  const username = document.getElementById('profile-username').value.trim();
-  const password = document.getElementById('profile-password').value;
-  const alertEl = document.getElementById('profile-login-alert');
-
-  if (!username || !password) {
-    alertEl.innerHTML = '<div class="alert alert-error">Username dan password harus diisi</div>';
-    return;
-  }
-
-  const data = await apiFetch('/auth/login', {
-    method: 'POST',
-    body: JSON.stringify({ username, password })
-  });
-
-  if (data.error) {
-    alertEl.innerHTML = `<div class="alert alert-error">${data.error}</div>`;
-    return;
-  }
-
-  if (data.access_token || data.token) {
-    setToken(data.access_token || data.token);
-    showToast('✅ Login berhasil!');
-    loadProfile();
-    loadHomeStats();
-  }
-}
 
 function doLogout() {
   removeToken();

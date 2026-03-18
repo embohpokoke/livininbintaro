@@ -19,6 +19,25 @@ def serialize_datetime(value):
     return value.isoformat() if value else None
 
 
+def serialize_images(images_data):
+    """Safely serialize images to JSON-safe list of dicts"""
+    if not images_data:
+        return []
+    
+    result = []
+    for img in images_data:
+        if isinstance(img, dict):
+            result.append(img)
+        elif hasattr(img, '__dict__'):
+            # SQLAlchemy object or similar
+            result.append({k: v for k, v in img.__dict__.items() if not k.startswith('_')})
+        else:
+            # Fallback: convert to string
+            result.append({"url": str(img)})
+    
+    return result
+
+
 def normalize_listing_type(value: str | None) -> str | None:
     if value in {"jual", "dijual"}:
         return "dijual"
@@ -51,7 +70,7 @@ def listing_to_dict(listing: Listing, include_internal: bool = False) -> dict[st
         "province": None,
         "description": listing.description,
         "facilities": [],
-        "images": listing.images or [],
+        "images": serialize_images(listing.images),
         "drive_folder_id": listing.drive_folder_id,
         "drive_link": listing.drive_link,
         "is_active": listing.is_active,
